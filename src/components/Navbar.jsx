@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Home, BarChart3, Settings, LogOut, User, Bell, ChevronDown, UserCog, Database, Shield, Palette, AlertTriangle } from 'lucide-react';
+import AuthService from '../services/AuthService';
 
 const Navbar = ({ currentPage, onPageChange, userInfo = { name: 'Admin User', role: 'Operations Manager' } }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -216,7 +217,14 @@ const Navbar = ({ currentPage, onPageChange, userInfo = { name: 'Admin User', ro
                 <div className="h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center">
                   <User className="h-4 w-4 text-gray-600" />
                 </div>
-                <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                <button 
+                  onClick={() => {
+                    AuthService.logout();
+                    window.location.href = '/login';
+                  }}
+                  className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                  title="Logout"
+                >
                   <LogOut className="h-4 w-4" />
                 </button>
               </div>

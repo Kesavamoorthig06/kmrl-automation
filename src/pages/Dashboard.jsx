@@ -15,6 +15,7 @@ import SystemStatus from "../components/dashboard/SystemStatus.jsx";
 // Removed debug component to maintain minimal theme
 // Removed unused CSV parsing imports - now using MLDataService
 import MLDataService from "../services/MLDataService.js";
+import AuthService from "../services/AuthService.js";
 
 function Dashboard() {
   const [trains, setTrains] = useState([]);
@@ -712,14 +713,21 @@ function Dashboard() {
     try {
       console.log("Starting ML simulation rerun...");
       
-      // Refresh ML data
-      await MLDataService.refresh();
+      // Use AuthService to call the API
+      const result = await AuthService.rerunSimulation();
       
-      // Reload the data
-      await loadCSVData();
-      
-      // Show success message
-      alert("ML simulation completed successfully! Fresh data has been loaded.");
+      if (result.success) {
+        // Refresh ML data locally
+        await MLDataService.refresh();
+        
+        // Reload the data
+        await loadCSVData();
+        
+        // Show success message
+        alert("ML simulation completed successfully! Fresh data has been loaded.");
+      } else {
+        alert(`ML simulation failed: ${result.error}`);
+      }
     } catch (error) {
       console.error("Error running ML simulation:", error);
       

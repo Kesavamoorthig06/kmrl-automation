@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRScanner from '../components/QRScanner';
+import AuthService from '../services/AuthService';
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -44,27 +45,27 @@ function LoginPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleQRScan = (result) => {
+  const handleQRScan = async (result) => {
     console.log('QR Code scanned:', result);
     const scannedData = result.data;
     
-    // Check if the scanned QR code is valid
-    const validQRCodes = Object.keys(redirectionMap);
-    if (!validQRCodes.includes(scannedData)) {
-      setShowQRScanner(false);
-      showStatusMessage(`Invalid QR Code: "${scannedData}". Please use a valid KMRL QR code.`, 'error');
-      return;
-    }
-    
-    // Immediately redirect to the respective page
     setShowQRScanner(false);
-    showStatusMessage(`Access granted! Redirecting to ${scannedData} portal...`, 'success');
+    showStatusMessage('Verifying QR code...', 'info');
     
-    // Redirect after a short delay to show the success message
-    setTimeout(() => {
-      const destination = redirectionMap[scannedData];
-      navigate(destination);
-    }, 1500);
+    try {
+      // Verify QR code with API
+      const verification = await AuthService.verifyQRCode(scannedData);
+      
+      if (verification.success) {
+        // Set the QR code in form data
+        setFormData(prev => ({ ...prev, qrCode: scannedData }));
+        showStatusMessage(`QR Code verified! Please enter your credentials to continue.`, 'success');
+      } else {
+        showStatusMessage(`Invalid QR Code: "${scannedData}". ${verification.error}`, 'error');
+      }
+    } catch (error) {
+      showStatusMessage(`QR Code verification failed: ${error.message}`, 'error');
+    }
   };
 
   const handleQRScanError = (error) => {
@@ -76,7 +77,7 @@ function LoginPage() {
     setShowQRScanner(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const { workerId, qrCode, password } = formData;
@@ -92,36 +93,41 @@ function LoginPage() {
       return;
     }
 
-    // Determine destination
-    let destination = null;
+    // Show loading message
+    showStatusMessage('Authenticating...', 'info');
 
-    // Check worker ID first
-    if (workerIdMap[workerId.toLowerCase()]) {
-      destination = workerIdMap[workerId.toLowerCase()];
-    }
-    // Check QR code if no worker ID match
-    else if (qrCode) {
-      // Validate QR code
-      if (!redirectionMap[qrCode]) {
-        showStatusMessage(`Invalid QR Code: "${qrCode}". Please use a valid KMRL QR code.`, 'error');
-        return;
+    try {
+      // Attempt login with API
+      const loginResult = await AuthService.login(workerId, password, qrCode);
+      
+      if (loginResult.success) {
+        showStatusMessage('Login successful! Redirecting...', 'success');
+        
+        // Determine destination based on user role or QR code
+        let destination = '/dashboard'; // Default to dashboard
+        
+        if (loginResult.qrCode) {
+          // Use QR code redirection if available
+          const qrDestination = redirectionMap[loginResult.qrCode.code];
+          if (qrDestination) {
+            destination = qrDestination;
+          }
+        } else if (workerIdMap[workerId.toLowerCase()]) {
+          // Use worker ID mapping
+          destination = workerIdMap[workerId.toLowerCase()];
+        }
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+          navigate(destination);
+        }, 1500);
+      } else {
+        showStatusMessage(`Login failed: ${loginResult.error}`, 'error');
       }
-      destination = redirectionMap[qrCode];
+    } catch (error) {
+      console.error('Login error:', error);
+      showStatusMessage(`Login error: ${error.message}`, 'error');
     }
-    // Default to dashboard for admin
-    else if (workerId.toLowerCase() === 'admin') {
-      destination = '/dashboard';
-    }
-    else {
-      showStatusMessage('Invalid Worker ID or QR Code. Please use valid credentials.', 'error');
-      return;
-    }
-
-    // Show success and redirect
-    showStatusMessage('Login successful! Redirecting...', 'success');
-    setTimeout(() => {
-      navigate(destination);
-    }, 1500);
   };
 
   return (

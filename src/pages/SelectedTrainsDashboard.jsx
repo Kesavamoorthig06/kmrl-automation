@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "../components/ui/Alert.jsx"
 import { CheckCircle, BarChart3, Target, RefreshCw, MapPin, Train } from "lucide-react";
 import Navbar from "../components/Navbar.jsx";
 import MLDataService from "../services/MLDataService.js";
+import AuthService from "../services/AuthService.js";
 
 // CSV data loading functionality
 const parseCSV = (csvText) => {
@@ -133,13 +134,27 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
   };
 
   // Handle deploy all trains
-  const handleDeployAll = () => {
-    // Show browser alert message
-    alert(`Successfully deployed ${selectedTrains.length} trains!\n\nDeployment Details:\n- Trains: ${selectedTrains.map(train => train.id).join(', ')}\n- Success Rate: 100%\n- All crews have been notified\n\nDeployment completed successfully!`);
-    
-    // Navigate to deployment success page
-    if (onDeploySuccess) {
-      onDeploySuccess(selectedTrains);
+  const handleDeployAll = async () => {
+    try {
+      console.log("Deploying trains:", selectedTrains.map(train => train.id));
+      
+      // Use AuthService to call the deployment API
+      const result = await AuthService.deployTrains(selectedTrains.map(train => train.id));
+      
+      if (result.success) {
+        // Show success message with API response
+        alert(`Successfully deployed ${selectedTrains.length} trains!\n\nDeployment Details:\n- Trains: ${selectedTrains.map(train => train.id).join(', ')}\n- Success Rate: 100%\n- All crews have been notified\n\nDeployment completed successfully!`);
+        
+        // Navigate to deployment success page
+        if (onDeploySuccess) {
+          onDeploySuccess(selectedTrains);
+        }
+      } else {
+        alert(`Deployment failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Deployment error:", error);
+      alert(`Deployment error: ${error.message}`);
     }
   };
 
