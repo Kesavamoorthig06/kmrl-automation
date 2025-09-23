@@ -1,0 +1,252 @@
+/* ...existing code... */
+
+/* Vertically center all table cells */
+.table th, .table td {
+  vertical-align: middle;
+}
+
+/* Right-align numeric columns */
+.table td:nth-child(4), /* Score */
+.table td:nth-child(6), /* Branding Priority */
+.table td:nth-child(7)  /* Mileage */
+{
+  text-align: right;
+}
+
+/* Center-align Deployable column (checkbox) */
+.table td:last-child {
+  text-align: center;
+}
+
+/* Optional: Make checkboxes larger and vertically centered */
+.table input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+/* ...existing code... *//* Simple Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body, .App {
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.4;
+}
+
+/* Simple Typography */
+h1 {
+  color: #333;
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+h2, h3 {
+  color: #333;
+  margin: 15px 0 10px 0;
+  font-size: 18px;
+}
+
+p {
+  color: #333;
+  margin: 8px 0;
+}
+
+/* Simple Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Simple Grid Layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px;
+}
+
+.col {
+  flex: 1;
+  padding: 10px;
+  min-width: 250px;
+}
+
+/* Simple Metrics Boxes */
+.monochrome-box {
+  background: #333;
+  color: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.metric-label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Simple Cards */
+.card {
+  background: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Simple Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  margin: 10px 0;
+}
+
+.table th {
+  background: #f8f8f8;
+  color: #333;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.table tr:hover {
+  background: #f9f9f9;
+}
+
+/* Simple Buttons */
+.btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+}
+
+.btn:hover {
+  background: #0056b3;
+}
+
+.btn-secondary {
+  background: #6c757d;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+}
+
+/* Simple Navigation */
+.nav {
+  background: white;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  padding: 8px 16px;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+
+.nav-link:hover {
+  background: #f8f8f8;
+}
+
+/* Simple Alerts */
+.alert {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.alert-error {
+  background: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+
+.alert-maintenance {
+  background: #333;
+  color: #fff;
+  box-shadow: 0 0 16px 2px rgba(255,255,255,0.12);
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  width: 100%;
+  display: block;
+  transition: box-shadow 0.2s;
+}
+
+.alert-maintenance:hover {
+  box-shadow: 0 0 24px 4px rgba(255,255,255,0.18);
+}
+
+/* Simple Form Elements */
+input, select, textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .col {
+    flex: 100%;
+    min-width: 100%;
+  }
+  
+  .container {
+    padding: 0 10px;
+  }
+  
+  body, .App {
+    padding: 10px;
+  }
+}

@@ -1,0 +1,26 @@
+train_id,status,assignment,fitness_certificate_valid,job_card_status,branding_priority,mileage,last_cleaned_date,stabling_bay,mileage_score,branding_score,cleaning_score,shunting_score,prelim_score,final_score_ga,maintenance_reason
+1,eligible,service,True,closed,7,14500,2025-09-05,A3,0.3439,0.6667,0.6429,0.6911,0.5538,0.5538,
+2,maintenance,maintenance,False,open,4,11200,2025-09-08,B2,,,,,,,Fitness certificate invalid
+3,maintenance,maintenance,True,open,6,8700,2025-09-01,C5,,,,,,,Open job card
+4,eligible,service,True,closed,9,19500,2025-08-28,D1,0.0255,0.8889,0.0714,0.3456,0.4506,0.4506,
+5,eligible,service,True,closed,2,5400,2025-09-06,B6,0.9236,0.1111,0.7143,0.6911,0.5138,0.5138,
+6,maintenance,maintenance,True,open,8,16700,2025-09-03,C7,,,,,,,Open job card
+7,eligible,service,True,closed,3,9600,2025-08-30,A5,0.6561,0.2222,0.2143,1.0,0.451,0.451,
+8,maintenance,maintenance,False,open,5,12400,2025-09-09,D3,,,,,,,Fitness certificate invalid
+9,eligible,service,True,closed,10,17800,2025-09-04,B4,0.1338,1.0,0.5714,0.6297,0.6169,0.6169,
+10,maintenance,maintenance,True,open,1,3100,2025-09-07,C2,,,,,,,Open job card
+11,eligible,service,True,closed,6,15300,2025-09-10,A1,0.293,0.5556,1.0,0.3594,0.4885,0.4885,
+12,eligible,service,True,closed,7,8900,2025-09-02,D7,0.7006,0.6667,0.4286,0.0254,0.5906,0.5906,
+13,maintenance,maintenance,False,open,2,7200,2025-09-06,B1,,,,,,,Fitness certificate invalid
+14,maintenance,maintenance,True,open,5,13800,2025-09-09,C6,,,,,,,Open job card
+15,eligible,service,True,closed,9,16400,2025-08-27,A7,0.2229,0.8889,0.0,1.0,0.578,0.578,
+16,eligible,service,True,closed,3,5800,2025-09-05,D5,0.8981,0.2222,0.6429,0.0,0.4786,0.4786,
+17,maintenance,maintenance,True,open,8,14900,2025-09-08,B7,,,,,,,Open job card
+18,eligible,service,True,closed,4,10100,2025-08-31,C1,0.6242,0.3333,0.2857,0.0681,0.4038,0.4038,
+19,maintenance,maintenance,False,open,6,13400,2025-09-04,D6,,,,,,,Fitness certificate invalid
+20,eligible,service,True,closed,1,4200,2025-09-02,A4,1.0,0.0,0.4286,0.8534,0.4782,0.4782,
+21,maintenance,maintenance,True,open,7,17100,2025-09-07,B3,,,,,,,Open job card
+22,eligible,service,True,closed,2,9400,2025-09-01,C4,0.6688,0.1111,0.3571,0.3232,0.3521,0.3521,
+23,eligible,service,True,closed,8,18500,2025-09-10,D2,0.0892,0.7778,1.0,0.2273,0.5039,0.5039,
+24,maintenance,maintenance,True,open,5,12200,2025-09-03,A2,,,,,,,Open job card
+25,eligible,service,True,closed,10,19900,2025-08-29,C3,0.0,1.0,0.1429,0.2554,0.4898,0.4898,
