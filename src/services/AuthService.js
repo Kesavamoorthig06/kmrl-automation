@@ -3,9 +3,8 @@
 
 class AuthService {
   constructor() {
-    this.baseURL = process.env.NODE_ENV === 'production' 
-      ? 'https://your-app-name.vercel.app' 
-      : 'http://localhost:3000';
+    // Use environment variable for API URL, fallback to localhost for development
+    this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
     this.token = localStorage.getItem('kmrl_token');
     this.user = JSON.parse(localStorage.getItem('kmrl_user') || 'null');
   }

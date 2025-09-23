@@ -9,3 +9,12 @@
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Environment variables for backend connection
+[context.production.environment]
+  REACT_APP_API_URL = "https://your-backend-url.herokuapp.com"
+  REACT_APP_ENVIRONMENT = "production"
+
+[context.development.environment]
+  REACT_APP_API_URL = "http://localhost:4000"
+  REACT_APP_ENVIRONMENT = "development"
