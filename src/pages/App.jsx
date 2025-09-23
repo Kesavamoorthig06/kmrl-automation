@@ -14,7 +14,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
@@ -23,7 +23,7 @@ function App() {
           <Route path="/confirm" element={<SelectedTrainsDashboard />} />
           <Route path="/workers/:workerType" element={<WorkerPage />} />
           <Route path="/alerts" element={<AlertsPage />} />
-          <Route path="*" element={<Dashboard />} />
+          <Route path="*" element={<LoginPage />} />
         </Routes>
       </div>
     </Router>

@@ -16,8 +16,11 @@ import SystemStatus from "../components/dashboard/SystemStatus.jsx";
 // Removed unused CSV parsing imports - now using MLDataService
 import MLDataService from "../services/MLDataService.js";
 import AuthService from "../services/AuthService.js";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -74,11 +77,21 @@ function Dashboard() {
     }
   };
 
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!AuthService.isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
+  }, [navigate]);
+
   // Load CSV data on component mount
   useEffect(() => {
-    loadCSVData();
-    checkServerStatus();
-    initializeMLData();
+    if (AuthService.isAuthenticated()) {
+      loadCSVData();
+      checkServerStatus();
+      initializeMLData();
+    }
   }, []);
 
   // Initialize ML data service

@@ -7,6 +7,7 @@ import { CheckCircle, BarChart3, Target, RefreshCw, MapPin, Train } from "lucide
 import Navbar from "../components/Navbar.jsx";
 import MLDataService from "../services/MLDataService.js";
 import AuthService from "../services/AuthService.js";
+import { useNavigate } from "react-router-dom";
 
 // CSV data loading functionality
 const parseCSV = (csvText) => {
@@ -80,14 +81,25 @@ const convertCSVToTrains = (csvData) => {
 };
 
 export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDeploySuccess }) {
+  const navigate = useNavigate();
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
 
+  // Check authentication on component mount
+  useEffect(() => {
+    if (!AuthService.isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
+  }, [navigate]);
+
   // Load CSV data on component mount
   useEffect(() => {
-    loadCSVData();
+    if (AuthService.isAuthenticated()) {
+      loadCSVData();
+    }
   }, []);
 
   const loadCSVData = async () => {
