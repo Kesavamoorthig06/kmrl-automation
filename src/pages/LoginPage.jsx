@@ -63,17 +63,36 @@ function LoginPage() {
     const scannedData = result.data;
     
     setShowQRScanner(false);
-    showStatusMessage('QR Code detected! Redirecting...', 'success');
+    showStatusMessage('QR Code detected! Authenticating...', 'success');
     
     try {
       // Check if QR code has a direct redirection mapping
       const destination = redirectionMap[scannedData];
       
       if (destination) {
-        // Auto-redirect after QR detection
-        setTimeout(() => {
-          navigate(destination);
-        }, 1500);
+        // For admin QR codes, authenticate the user first
+        if (destination === '/dashboard') {
+          try {
+            // Authenticate as admin for dashboard access
+            const authResult = await AuthService.login('admin', 'admin', scannedData);
+            if (authResult.success) {
+              showStatusMessage('Authentication successful! Redirecting to dashboard...', 'success');
+              setTimeout(() => {
+                navigate(destination);
+              }, 1500);
+            } else {
+              showStatusMessage(`Authentication failed: ${authResult.error}`, 'error');
+            }
+          } catch (authError) {
+            console.error('Authentication error:', authError);
+            showStatusMessage(`Authentication failed: ${authError.message}`, 'error');
+          }
+        } else {
+          // For worker QR codes, redirect directly
+          setTimeout(() => {
+            navigate(destination);
+          }, 1500);
+        }
       } else {
         // If no direct mapping, show error
         showStatusMessage(`Invalid QR Code: "${scannedData}". Please use a valid KMRL QR code.`, 'error');
