@@ -15,20 +15,20 @@ function LoginPage() {
 
   // QR Code redirection mapping for different worker types
   const redirectionMap = {
-    '23it279': '/workers/operation-staff',
-    'TECH001': '/workers/technical',
-    'YARD001': '/workers/yard',
-    'OPS001': '/workers/ops-interface',
-    'BRAND001': '/workers/branding-officer',
-    'CLEAN001': '/workers/cleaning',
+    '23it279': '/operation_staff.html',
+    'TECH001': '/technical.html',
+    'YARD001': '/yard.html',
+    'OPS001': '/kochi_metro_ops_interface.html',
+    'BRAND001': '/branding_officer.html',
+    'CLEAN001': '/cleaning.html',
     'ADMIN001': '/dashboard',
     // Additional QR codes for different roles
-    'OPERATION': '/workers/operation-staff',
-    'TECHNICAL': '/workers/technical',
-    'YARD': '/workers/yard',
-    'OPS': '/workers/ops-interface',
-    'BRANDING': '/workers/branding-officer',
-    'CLEANING': '/workers/cleaning',
+    'OPERATION': '/operation_staff.html',
+    'TECHNICAL': '/technical.html',
+    'YARD': '/yard.html',
+    'OPS': '/kochi_metro_ops_interface.html',
+    'BRANDING': '/branding_officer.html',
+    'CLEANING': '/cleaning.html',
     'ADMIN': '/dashboard',
     // Additional admin QR codes
     'admin': '/dashboard',
