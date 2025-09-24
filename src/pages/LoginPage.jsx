@@ -29,7 +29,12 @@ function LoginPage() {
     'OPS': '/workers/ops-interface',
     'BRANDING': '/workers/branding-officer',
     'CLEANING': '/workers/cleaning',
-    'ADMIN': '/dashboard'
+    'ADMIN': '/dashboard',
+    // Additional admin QR codes
+    'admin': '/dashboard',
+    'Admin': '/dashboard',
+    'ADMINISTRATOR': '/dashboard',
+    'MANAGER': '/dashboard'
   };
 
   // Worker ID mapping for direct access
