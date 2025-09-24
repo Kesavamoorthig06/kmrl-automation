@@ -21,7 +21,15 @@ function LoginPage() {
     'OPS001': '/workers/ops-interface',
     'BRAND001': '/workers/branding-officer',
     'CLEAN001': '/workers/cleaning',
-    'ADMIN001': '/dashboard'
+    'ADMIN001': '/dashboard',
+    // Additional QR codes for different roles
+    'OPERATION': '/workers/operation-staff',
+    'TECHNICAL': '/workers/technical',
+    'YARD': '/workers/yard',
+    'OPS': '/workers/ops-interface',
+    'BRANDING': '/workers/branding-officer',
+    'CLEANING': '/workers/cleaning',
+    'ADMIN': '/dashboard'
   };
 
   // Worker ID mapping for direct access
@@ -50,21 +58,24 @@ function LoginPage() {
     const scannedData = result.data;
     
     setShowQRScanner(false);
-    showStatusMessage('Verifying QR code...', 'info');
+    showStatusMessage('QR Code detected! Redirecting...', 'success');
     
     try {
-      // Verify QR code with API
-      const verification = await AuthService.verifyQRCode(scannedData);
+      // Check if QR code has a direct redirection mapping
+      const destination = redirectionMap[scannedData];
       
-      if (verification.success) {
-        // Set the QR code in form data
-        setFormData(prev => ({ ...prev, qrCode: scannedData }));
-        showStatusMessage(`QR Code verified! Please enter your credentials to continue.`, 'success');
+      if (destination) {
+        // Auto-redirect after QR detection
+        setTimeout(() => {
+          navigate(destination);
+        }, 1500);
       } else {
-        showStatusMessage(`Invalid QR Code: "${scannedData}". ${verification.error}`, 'error');
+        // If no direct mapping, show error
+        showStatusMessage(`Invalid QR Code: "${scannedData}". Please use a valid KMRL QR code.`, 'error');
       }
     } catch (error) {
-      showStatusMessage(`QR Code verification failed: ${error.message}`, 'error');
+      console.error('QR Code processing error:', error);
+      showStatusMessage(`QR Code processing failed: ${error.message}`, 'error');
     }
   };
 
@@ -189,7 +200,7 @@ function LoginPage() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                QR Code Access
+                QR Code Access (Auto-Redirect)
               </label>
                   <button
                     type="button"
@@ -202,6 +213,9 @@ function LoginPage() {
                     </svg>
                     <span>Scan QR Code</span>
                   </button>
+                  <p className="text-xs text-gray-500 mt-2 text-center">
+                    Scan your QR code to automatically access your dashboard
+                  </p>
               
               {formData.qrCode && (
                 <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
