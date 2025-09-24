@@ -214,12 +214,25 @@ class AuthService {
 
   // Check if user is authenticated
   isAuthenticated() {
-    return !!this.token && !!this.user;
+    // Check both instance properties and localStorage
+    const hasToken = !!this.token || !!localStorage.getItem('kmrl_token');
+    const hasUser = !!this.user || !!localStorage.getItem('kmrl_user');
+    return hasToken && hasUser;
   }
 
   // Get current user
   getCurrentUser() {
+    // Refresh from localStorage if not set
+    if (!this.user) {
+      this.user = JSON.parse(localStorage.getItem('kmrl_user') || 'null');
+    }
     return this.user;
+  }
+
+  // Refresh authentication state from localStorage
+  refreshAuthState() {
+    this.token = localStorage.getItem('kmrl_token');
+    this.user = JSON.parse(localStorage.getItem('kmrl_user') || 'null');
   }
 
   // Get stored QR code info

@@ -76,6 +76,8 @@ function LoginPage() {
             // Authenticate as admin for dashboard access
             const authResult = await AuthService.login('admin', 'admin', scannedData);
             if (authResult.success) {
+              // Refresh authentication state
+              AuthService.refreshAuthState();
               showStatusMessage('Authentication successful! Redirecting to dashboard...', 'success');
               setTimeout(() => {
                 navigate(destination);
@@ -136,6 +138,8 @@ function LoginPage() {
       const loginResult = await AuthService.login(workerId, password, qrCode);
       
       if (loginResult.success) {
+        // Refresh authentication state
+        AuthService.refreshAuthState();
         showStatusMessage('Login successful! Redirecting...', 'success');
         
         // Determine destination based on user role or QR code
