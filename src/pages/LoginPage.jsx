@@ -15,22 +15,22 @@ function LoginPage() {
 
   // QR Code redirection mapping for different worker types
   const redirectionMap = {
-    '23it279': '/workers/operation-staff',
-    'TECH001': '/workers/technical',
-    'YARD001': '/workers/yard',
-    'OPS001': '/workers/ops-interface',
-    'BRAND001': '/workers/branding-officer',
-    'CLEAN001': '/workers/cleaning',
+    '23it279': '/auth-server/operation staff.html',
+    'TECH001': '/auth-server/technical.html',
+    'YARD001': '/auth-server/yard.html',
+    'OPS001': '/auth-server/kochi_metro_ops_interface.html',
+    'BRAND001': '/auth-server/branding_officer.html',
+    'CLEAN001': '/auth-server/cleaning.html',
     'ADMIN001': '/dashboard'
   };
 
   // Worker ID mapping for direct access
   const workerIdMap = {
     'admin': '/dashboard',
-    'clean': '/workers/cleaning',
-    'brand': '/workers/branding-officer',
-    'tech': '/workers/technical',
-    'operation': '/workers/operation-staff'
+    'clean': '/auth-server/cleaning.html',
+    'brand': '/auth-server/branding_officer.html',
+    'tech': '/auth-server/technical.html',
+    'operation': '/auth-server/operation staff.html'
   };
 
   // Helper function to get role from QR code
