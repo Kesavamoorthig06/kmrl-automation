@@ -16,7 +16,6 @@ import SystemStatus from "../components/dashboard/SystemStatus.jsx";
 // Removed unused CSV parsing imports - now using MLDataService
 import MLDataService from "../services/MLDataService.js";
 import AuthService from "../services/AuthService.js";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
