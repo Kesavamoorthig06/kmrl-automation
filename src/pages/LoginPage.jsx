@@ -205,7 +205,7 @@ function LoginPage() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                QR Code Access (Auto-Redirect)
+                QR Code Access
               </label>
                   <button
                     type="button"
@@ -219,7 +219,7 @@ function LoginPage() {
                     <span>Scan QR Code</span>
                   </button>
                   <p className="text-xs text-gray-500 mt-2 text-center">
-                    Scan your QR code to automatically access your dashboard
+                    Scan your QR code to access your dashboard
                   </p>
               
               {formData.qrCode && (
