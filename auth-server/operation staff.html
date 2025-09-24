@@ -2,167 +2,429 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operation Staff Portal - KMRL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kochi Metro - Technician Interface</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f4f4f4;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #333;
+            padding: 10px;
         }
-        
+
         .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            overflow: hidden;
+            min-height: auto;
         }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1rem;
-            background: #667eea;
-            border-radius: 50%;
+
+        /* Header */
+        .header {
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .metro-logo {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
+            gap: 10px;
         }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 0.5rem;
-            font-size: 2rem;
+        .train-icon {
+            width: 30px; height: 20px;
+            background: #333;
+            border-radius: 4px;
+            position: relative;
         }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
+        .train-icon::after {
+            content: '';
+            position: absolute;
+            left: 3px; top: 3px;
+            width: 24px; height: 14px;
+            background: #fff;
+            border-radius: 2px;
         }
-        
-        .status-card {
+        .employee-info {
             background: #f8f9fa;
-            padding: 1.5rem;
+            padding: 12px;
             border-radius: 8px;
-            margin: 1rem 0;
-            border-left: 4px solid #667eea;
+            border: 1px solid #e0e0e0;
+            margin-top: 10px;
         }
-        
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 0.5rem 0;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
+        .employee-info div {
+            font-size: 14px;
+            margin-bottom: 4px;
         }
-        
-        .status-item:last-child {
-            border-bottom: none;
-        }
-        
-        .status-label {
-            color: #666;
-            font-weight: 500;
-        }
-        
-        .status-value {
+
+        /* QR Section */
+        .qr-section {
+            background: #f8f9fa;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
             color: #333;
-            font-weight: bold;
+            border: 1px solid #e0e0e0;
         }
-        
-        .actions {
-            margin-top: 2rem;
+        .qr-input { display: flex; gap: 10px; margin-top: 15px; }
+        .train-id-input {
+            flex: 1; padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fff;
+            color: #333;
+            transition: border-color 0.3s;
         }
-        
-        .btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+        .train-id-input:focus {
+            outline: none;
+            border-color: #333;
+        }
+        .qr-btn {
+            background: #333; color: #fff;
+            border: none; padding: 12px 16px;
+            border-radius: 8px; cursor: pointer;
+            font-size: 16px; min-width: 60px;
+            transition: background 0.3s;
+        }
+        .qr-btn:hover {
+            background: #555;
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin: 20px; background: #fff;
+            border-radius: 12px; padding: 20px;
+            border-left: 4px solid #333;
+            border: 1px solid #e0e0e0;
+        }
+        .section-title {
+            font-size: 16px; font-weight: 600;
+            color: #333; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-icon {
+            width: 24px; height: 24px;
+            background: #333; color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        /* Checkboxes */
+        .checkbox-group {
+            display: flex; align-items: center;
+            gap: 10px; padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px; margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
             cursor: pointer;
-            font-size: 1rem;
-            margin: 0.5rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s;
+        }
+        .checkbox-group:hover {
+            background: #f0f0f0;
+        }
+        .checkbox-group.checked {
+            background: #333; color: #fff;
+            border-color: #333;
+        }
+
+        /* Inputs */
+        .form-input, .form-select {
+            width: 100%; padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fff;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #333;
+        }
+        .datetime-input { background: #f8f9fa; border: 2px solid #ccc; }
+
+        /* Job Cards */
+        .job-card-item {
+            background: #f8f9fa;
+            color: #333; padding: 15px;
+            border-radius: 8px; margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        .add-job-btn {
+            background: #333;
+            color: #fff;
+            border: none; padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .add-job-btn:hover {
+            background: #555;
+        }
+
+        /* Notes */
+        .notes-textarea {
+            width: 100%; min-height: 100px;
+            padding: 12px; border: 2px solid #e0e0e0;
+            border-radius: 8px; font-size: 16px;
+            background: #fff;
+            transition: border-color 0.3s;
+        }
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #333;
+        }
+        .photo-upload {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px; background: #333;
+            border-radius: 8px; color: #fff; margin-top: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .photo-upload:hover {
+            background: #555;
+        }
+        .photo-upload input[type="file"] { display: none; }
+
+        /* Submit */
+        .submit-container { margin: 25px 20px; text-align: center; }
+        .submit-btn {
+            background: #333; color: #fff;
+            border: none; padding: 15px 40px;
+            font-size: 16px; font-weight: 600;
+            border-radius: 8px; cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: #555;
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                max-width: 100%;
+                margin: 0;
+                border-radius: 12px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .metro-logo {
+                font-size: 16px;
+            }
+            
+            .employee-info {
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .qr-section {
+                margin: 15px;
+                padding: 15px;
+            }
+            
+            .form-section {
+                margin: 15px;
+                padding: 15px;
+            }
+            
+            .section-title {
+                font-size: 15px;
+            }
+            
+            .form-input, .form-select, .notes-textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 14px;
+            }
+            
+            .train-id-input {
+                font-size: 16px;
+                padding: 14px;
+            }
+            
+            .checkbox-group {
+                padding: 14px;
+                min-height: 50px;
+            }
+            
+            .submit-container {
+                margin: 20px 15px;
+            }
+            
+            .submit-btn {
+                padding: 16px;
+                font-size: 16px;
+                min-height: 50px;
+            }
         }
         
-        .btn:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-        }
-        
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        
-        .footer {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-            color: #666;
-            font-size: 0.9rem;
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 8px;
+            }
+            
+            .header {
+                padding: 12px;
+            }
+            
+            .metro-logo {
+                font-size: 15px;
+            }
+            
+            .employee-info {
+                padding: 8px;
+                font-size: 12px;
+            }
+            
+            .qr-section, .form-section {
+                margin: 10px;
+                padding: 12px;
+            }
+            
+            .section-title {
+                font-size: 14px;
+            }
+            
+            .form-input, .form-select, .notes-textarea, .train-id-input {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .checkbox-group {
+                padding: 12px;
+                min-height: 45px;
+            }
+            
+            .submit-btn {
+                padding: 14px;
+                font-size: 15px;
+                min-height: 45px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">🚇</div>
-        <h1>Operation Staff Portal</h1>
-        <p class="subtitle">Kochi Metro Rail Limited</p>
-        
-        <div class="status-card">
-            <h3 style="margin-bottom: 1rem; color: #333;">Current Status</h3>
-            <div class="status-item">
-                <span class="status-label">Active Trains:</span>
-                <span class="status-value">8</span>
+        <!-- Header -->
+        <div class="header">
+            <div class="metro-logo">
+                <div class="train-icon"></div> Kochi Metro Rail
             </div>
-            <div class="status-item">
-                <span class="status-label">Maintenance:</span>
-                <span class="status-value">2</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Out of Service:</span>
-                <span class="status-value">1</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">System Status:</span>
-                <span class="status-value" style="color: #28a745;">Operational</span>
+            <div class="employee-info">
+                <div><strong>Employee ID:</strong> <span id="employeeId">TECH001</span></div>
+                <div><strong>Name:</strong> <span id="employeeName">Rajesh Kumar</span></div>
             </div>
         </div>
-        
-        <div class="actions">
-            <a href="#" class="btn">Report Incident</a>
-            <a href="#" class="btn">Update Status</a>
-            <a href="#" class="btn btn-secondary">Request Maintenance</a>
+
+        <!-- QR Section -->
+        <div class="qr-section">
+            <h3>🚊 Train Identification</h3>
+            <div class="qr-input">
+                <input type="text" class="train-id-input" id="trainId" placeholder="Enter Train ID or Scan QR">
+                <button class="qr-btn" onclick="openCamera()">📷</button>
+            </div>
         </div>
-        
-        <div class="footer">
-            <p>© 2025 Kochi Metro Rail Limited. All rights reserved.</p>
-            <p><a href="/login" style="color: #667eea; text-decoration: none;">← Back to Login</a></p>
+
+        <!-- Section 1 -->
+        <div class="form-section">
+            <div class="section-title"><div class="section-icon">1</div> Fitness Certificates</div>
+            <div class="checkbox-group"><input type="checkbox" id="rollingStock"><label for="rollingStock">Rolling-stock Clearance</label></div>
+            <div class="checkbox-group"><input type="checkbox" id="signalling"><label for="signalling">Signalling Clearance</label></div>
+            <div class="checkbox-group"><input type="checkbox" id="telecom"><label for="telecom">Telecom Clearance</label></div>
+            <label>Expiry Date/Time</label>
+            <input type="datetime-local" class="form-input datetime-input" id="expiryDateTime">
+        </div>
+
+        <!-- Section 2 -->
+        <div class="form-section">
+            <div class="section-title"><div class="section-icon">2</div> Job-Card Status</div>
+            <div id="jobCardsContainer">
+                <div class="job-card-item">
+                    <label>Job-card ID</label>
+                    <select class="form-select"><option value="">Select Job Card</option><option>JC001</option></select>
+                    <label>Job-card Status</label>
+                    <select class="form-select"><option value="">Select Status</option><option>Open</option><option>Closed</option></select>
+                </div>
+            </div>
+            <button class="add-job-btn" onclick="addJobCard()">➕ Add Another</button>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="form-section">
+            <div class="section-title"><div class="section-icon">3</div> Notes & Media</div>
+            <textarea class="notes-textarea" id="technicianNotes" placeholder="Enter notes..."></textarea>
+            <label class="photo-upload">
+                <input type="file" accept="image/*" capture="camera" id="photoUpload">
+                📷 Attach Photo
+            </label>
+            <div id="photoPreview" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-container">
+            <button class="submit-btn" onclick="submitForm()">✅ Submit Report</button>
         </div>
     </div>
+
+    <script>
+        function openCamera(){ alert("📱 Camera would open in real app."); }
+
+        function addJobCard(){
+            const container = document.getElementById("jobCardsContainer");
+            const newCard = document.createElement("div");
+            newCard.className = "job-card-item";
+            newCard.innerHTML = `
+                <label>Job-card ID</label>
+                <select class="form-select"><option value="">Select Job Card</option><option>JC002</option></select>
+                <label>Job-card Status</label>
+                <select class="form-select"><option value="">Select Status</option><option>Open</option><option>Closed</option></select>
+                <button onclick="this.parentElement.remove()" style="margin-top:10px;">❌ Remove</button>
+            `;
+            container.appendChild(newCard);
+        }
+
+        function submitForm(){
+            const trainId = document.getElementById("trainId").value;
+            if(!trainId){ alert("❌ Enter Train ID"); return; }
+            alert("✅ Report submitted for Train " + trainId);
+        }
+
+        // Photo preview
+        document.getElementById("photoUpload").addEventListener("change", function(e){
+            const file = e.target.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function(evt){
+                    const img = document.createElement("img");
+                    img.src = evt.target.result;
+                    img.style.width = "100%";
+                    img.style.borderRadius = "10px";
+                    document.getElementById("photoPreview").innerHTML = "";
+                    document.getElementById("photoPreview").appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
 </body>
 </html>

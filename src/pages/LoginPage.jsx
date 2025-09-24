@@ -13,7 +13,7 @@ function LoginPage() {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const navigate = useNavigate();
 
-  // QR Code redirection mapping for different worker types
+  // QR Code redirection mapping for different worker types - Direct HTML file paths
   const redirectionMap = {
     '23it279': '/auth-server/operation staff.html',
     'TECH001': '/auth-server/technical.html',
@@ -47,6 +47,18 @@ function LoginPage() {
     return roleMap[qrCode] || 'Employee';
   };
 
+  // Function to open HTML files directly
+  const openHTMLFile = (filePath) => {
+    // Check if it's a React route or HTML file
+    if (filePath === '/dashboard') {
+      // Use React Router for dashboard
+      navigate('/dashboard');
+    } else {
+      // Open HTML file directly in new tab
+      window.open(filePath, '_blank');
+    }
+  };
+
   const showStatusMessage = (message, type) => {
     setStatusMessage({ text: message, type, show: true });
     setTimeout(() => {
@@ -73,7 +85,7 @@ function LoginPage() {
       if (verification.success) {
         // Set the QR code in form data
         setFormData(prev => ({ ...prev, qrCode: scannedData }));
-        showStatusMessage(`QR Code verified! Redirecting automatically...`, 'success');
+        showStatusMessage(`QR Code verified! Opening your dashboard...`, 'success');
         
         // Auto-redirect based on QR code
         const destination = redirectionMap[scannedData];
@@ -86,9 +98,9 @@ function LoginPage() {
             qrCode: scannedData
           });
           
-          // Redirect after a short delay
+          // Open the appropriate page after a short delay
           setTimeout(() => {
-            navigate(destination);
+            openHTMLFile(destination);
           }, 1500);
         } else {
           showStatusMessage(`Unknown QR Code: "${scannedData}". Please use a valid KMRL QR code.`, 'error');
@@ -150,9 +162,9 @@ function LoginPage() {
           destination = workerIdMap[workerId.toLowerCase()];
         }
         
-        // Redirect after a short delay
+        // Open the appropriate page after a short delay
         setTimeout(() => {
-          navigate(destination);
+          openHTMLFile(destination);
         }, 1500);
       } else {
         showStatusMessage(`Login failed: ${loginResult.error}`, 'error');

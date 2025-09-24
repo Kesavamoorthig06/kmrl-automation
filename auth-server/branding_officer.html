@@ -1,168 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Branding Officer Portal - KMRL</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1rem;
-            background: #667eea;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: bold;
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 0.5rem;
-            font-size: 2rem;
-        }
-        
-        .subtitle {
-            color: #666;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-        
-        .status-card {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border-left: 4px solid #667eea;
-        }
-        
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 0.5rem 0;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .status-item:last-child {
-            border-bottom: none;
-        }
-        
-        .status-label {
-            color: #666;
-            font-weight: 500;
-        }
-        
-        .status-value {
-            color: #333;
-            font-weight: bold;
-        }
-        
-        .actions {
-            margin-top: 2rem;
-        }
-        
-        .btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            margin: 0.5rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-        }
-        
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        
-        .footer {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-            color: #666;
-            font-size: 0.9rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Branding Officer - Advertising Wrap Tracker</title>
+  <style>
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f4f4f4;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+    /* Header */
+    .header {
+      background: #fff;
+      color: #000;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .header h1 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .header p {
+      font-size: 14px;
+      color: #666;
+    }
+    /* Form */
+    .form-container {
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500; /* softer bold */
+      color: #222;
+      font-size: 0.95em;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #333;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    }
+    /* Auto Field */
+    .auto-field {
+      background: #f9f9f9;
+      color: #555;
+      position: relative;
+    }
+    .auto-field::after {
+      content: "AUTO";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #333;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75em;
+    }
+    /* Override */
+    .override-toggle {
+      margin-top: 8px;
+    }
+    .override-checkbox {
+      width: auto;
+      margin-right: 8px;
+    }
+    .override-input {
+      margin-top: 8px;
+      display: none;
+    }
+    /* Remaining Display */
+    .remaining-display {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 1em;
+      text-align: center;
+      color: #333;
+    }
+    .remaining-display.low {
+      background: #fff3f3;
+      border-color: #aaa;
+      color: #000;
+      font-weight: 600;
+    }
+    /* Confirmation */
+    .confirmation {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .confirm-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: #333;
+    }
+    /* Submit */
+    .submit-btn {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+    .submit-btn:hover:not(:disabled) {
+      background: #555;
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    /* Info text */
+    .field-info {
+      font-size: 0.85em;
+      color: #777;
+      margin-top: 4px;
+      font-style: italic;
+    }
+    /* Mobile Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 5px;
+      }
+      
+      .container {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 12px;
+      }
+      
+      .header {
+        padding: 15px;
+      }
+      
+      .header h1 {
+        font-size: 16px;
+      }
+      
+      .header p {
+        font-size: 13px;
+      }
+      
+      .form-container {
+        padding: 15px;
+      }
+      
+      .form-group {
+        margin-bottom: 16px;
+      }
+      
+      input, select, button {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 14px;
+      }
+      
+      .submit-btn {
+        padding: 16px;
+        font-size: 16px;
+        min-height: 50px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        border-radius: 8px;
+      }
+      
+      .header {
+        padding: 12px;
+      }
+      
+      .header h1 {
+        font-size: 15px;
+      }
+      
+      .header p {
+        font-size: 12px;
+      }
+      
+      .form-container {
+        padding: 12px;
+      }
+      
+      .form-group {
+        margin-bottom: 14px;
+      }
+      
+      input, select, button {
+        padding: 12px;
+        font-size: 16px;
+      }
+      
+      .submit-btn {
+        padding: 14px;
+        font-size: 15px;
+        min-height: 45px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🎨</div>
-        <h1>Branding Officer Portal</h1>
-        <p class="subtitle">Kochi Metro Rail Limited</p>
-        
-        <div class="status-card">
-            <h3 style="margin-bottom: 1rem; color: #333;">Branding Status</h3>
-            <div class="status-item">
-                <span class="status-label">Active Campaigns:</span>
-                <span class="status-value">5</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Pending Approval:</span>
-                <span class="status-value">2</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Completed:</span>
-                <span class="status-value">12</span>
-            </div>
-            <div class="status-item">
-                <span class="status-label">Brand Compliance:</span>
-                <span class="status-value" style="color: #28a745;">98%</span>
-            </div>
-        </div>
-        
-        <div class="actions">
-            <a href="#" class="btn">Create Campaign</a>
-            <a href="#" class="btn">Review Materials</a>
-            <a href="#" class="btn btn-secondary">Update Guidelines</a>
-        </div>
-        
-        <div class="footer">
-            <p>© 2025 Kochi Metro Rail Limited. All rights reserved.</p>
-            <p><a href="/login" style="color: #667eea; text-decoration: none;">← Back to Login</a></p>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>Branding Officer</h1>
+      <p>Exterior Advertising Wrap Exposure Tracker</p>
     </div>
+    <div class="form-container">
+      <form id="brandingForm">
+        <!-- Train ID -->
+        <div class="form-group">
+          <label for="trainId">Train ID</label>
+          <input type="text" id="trainId" name="trainId" placeholder="Enter Train ID" required>
+          <div class="field-info">Manually enter train identification number</div>
+        </div>
+        <!-- Wrap ID Dropdown -->
+        <div class="form-group">
+          <label for="wrapId">Wrap ID</label>
+          <select id="wrapId" name="wrapId" required onchange="updateRemainingExposure()">
+            <option value="">Select active branding contract</option>
+            <option value="WRAP001" data-remaining="45.5">WRAP001 - Coca-Cola Summer Campaign</option>
+            <option value="WRAP002" data-remaining="72.3">WRAP002 - Nike Air Max Promo</option>
+            <option value="WRAP003" data-remaining="15.8">WRAP003 - Samsung Galaxy Launch</option>
+            <option value="WRAP004" data-remaining="98.2">WRAP004 - McDonald's Happy Meal</option>
+            <option value="WRAP005" data-remaining="5.5">WRAP005 - Local Bank Advertisement</option>
+          </select>
+          <div class="field-info">Select from currently active branding contracts</div>
+        </div>
+        <!-- Exposure Hours -->
+        <div class="form-group">
+          <label for="exposureHours">Exposure Hours Today</label>
+          <input type="number" id="exposureHours" name="exposureHours" step="0.1" class="auto-field" readonly>
+          <div class="override-toggle">
+            <input type="checkbox" id="overrideHours" class="override-checkbox" onchange="toggleOverride()">
+            <label for="overrideHours" style="display:inline; font-weight:400;">Manual override</label>
+          </div>
+          <input type="number" id="manualHours" class="override-input" step="0.1" placeholder="Enter manual hours">
+          <div class="field-info">Automatically calculated from mileage data. Check override for manual entry.</div>
+        </div>
+        <!-- Remaining Exposure -->
+        <div class="form-group">
+          <label for="remainingExposure">Remaining Exposure Required</label>
+          <div id="remainingDisplay" class="remaining-display">
+            Select a wrap contract to view remaining hours
+          </div>
+          <div class="field-info">Auto-calculated based on contract requirements and logged exposure</div>
+        </div>
+        <!-- Confirmation -->
+        <div class="form-group">
+          <div class="confirmation">
+            <input type="checkbox" id="confirmLog" class="confirm-checkbox" required onchange="toggleSubmit()">
+            <label for="confirmLog" style="flex:1; margin-bottom:0; font-weight:400;">
+              Confirm Branding Log<br>
+              <small>I confirm that the exposure data above is accurate and complete</small>
+            </label>
+          </div>
+        </div>
+        <!-- Submit -->
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>
+          Submit Exposure Log
+        </button>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
