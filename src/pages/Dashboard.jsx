@@ -78,9 +78,6 @@ function Dashboard() {
 
   // Check authentication on component mount
   useEffect(() => {
-    // Refresh authentication state from localStorage
-    AuthService.refreshAuthState();
-    
     if (!AuthService.isAuthenticated()) {
       navigate('/login');
       return;

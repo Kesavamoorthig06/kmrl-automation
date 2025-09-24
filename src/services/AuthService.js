@@ -214,25 +214,43 @@ class AuthService {
 
   // Check if user is authenticated
   isAuthenticated() {
-    // Check both instance properties and localStorage
-    const hasToken = !!this.token || !!localStorage.getItem('kmrl_token');
-    const hasUser = !!this.user || !!localStorage.getItem('kmrl_user');
-    return hasToken && hasUser;
+    return !!this.token && !!this.user;
+  }
+
+  // Set authentication state (for QR code auto-login)
+  setAuthenticated(isAuth) {
+    if (!isAuth) {
+      this.logout();
+    }
+  }
+
+  // Set user info (for QR code auto-login)
+  setUserInfo(userInfo) {
+    this.user = userInfo;
+    localStorage.setItem('kmrl_user', JSON.stringify(this.user));
+    
+    // Generate a simple token for QR-based authentication
+    const token = Buffer.from(JSON.stringify({
+      workerId: userInfo.id,
+      name: userInfo.role,
+      department: userInfo.role,
+      qrCode: userInfo.qrCode,
+      exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+    })).toString('base64');
+    
+    this.token = token;
+    localStorage.setItem('kmrl_token', this.token);
+    localStorage.setItem('kmrl_qrCode', JSON.stringify({
+      code: userInfo.qrCode,
+      type: userInfo.role.toLowerCase().replace(' ', '_'),
+      description: `${userInfo.role} Access`,
+      redirectUrl: null
+    }));
   }
 
   // Get current user
   getCurrentUser() {
-    // Refresh from localStorage if not set
-    if (!this.user) {
-      this.user = JSON.parse(localStorage.getItem('kmrl_user') || 'null');
-    }
     return this.user;
-  }
-
-  // Refresh authentication state from localStorage
-  refreshAuthState() {
-    this.token = localStorage.getItem('kmrl_token');
-    this.user = JSON.parse(localStorage.getItem('kmrl_user') || 'null');
   }
 
   // Get stored QR code info

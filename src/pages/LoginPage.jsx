@@ -15,26 +15,13 @@ function LoginPage() {
 
   // QR Code redirection mapping for different worker types
   const redirectionMap = {
-    '23it279': '/operation_staff.html',
-    'TECH001': '/technical.html',
-    'YARD001': '/yard.html',
-    'OPS001': '/kochi_metro_ops_interface.html',
-    'BRAND001': '/branding_officer.html',
-    'CLEAN001': '/cleaning.html',
-    'ADMIN001': '/dashboard',
-    // Additional QR codes for different roles
-    'OPERATION': '/operation_staff.html',
-    'TECHNICAL': '/technical.html',
-    'YARD': '/yard.html',
-    'OPS': '/kochi_metro_ops_interface.html',
-    'BRANDING': '/branding_officer.html',
-    'CLEANING': '/cleaning.html',
-    'ADMIN': '/dashboard',
-    // Additional admin QR codes
-    'admin': '/dashboard',
-    'Admin': '/dashboard',
-    'ADMINISTRATOR': '/dashboard',
-    'MANAGER': '/dashboard'
+    '23it279': '/workers/operation-staff',
+    'TECH001': '/workers/technical',
+    'YARD001': '/workers/yard',
+    'OPS001': '/workers/ops-interface',
+    'BRAND001': '/workers/branding-officer',
+    'CLEAN001': '/workers/cleaning',
+    'ADMIN001': '/dashboard'
   };
 
   // Worker ID mapping for direct access
@@ -44,6 +31,20 @@ function LoginPage() {
     'brand': '/workers/branding-officer',
     'tech': '/workers/technical',
     'operation': '/workers/operation-staff'
+  };
+
+  // Helper function to get role from QR code
+  const getRoleFromQRCode = (qrCode) => {
+    const roleMap = {
+      '23it279': 'Operation Staff',
+      'TECH001': 'Technical Crew',
+      'YARD001': 'Yard Operations',
+      'OPS001': 'Operations Interface',
+      'BRAND001': 'Branding Officer',
+      'CLEAN001': 'Cleaning Crew',
+      'ADMIN001': 'Administrator'
+    };
+    return roleMap[qrCode] || 'Employee';
   };
 
   const showStatusMessage = (message, type) => {
@@ -63,45 +64,40 @@ function LoginPage() {
     const scannedData = result.data;
     
     setShowQRScanner(false);
-    showStatusMessage('QR Code detected! Authenticating...', 'success');
+    showStatusMessage('Verifying QR code...', 'info');
     
     try {
-      // Check if QR code has a direct redirection mapping
-      const destination = redirectionMap[scannedData];
+      // Verify QR code with API
+      const verification = await AuthService.verifyQRCode(scannedData);
       
-      if (destination) {
-        // For admin QR codes, authenticate the user first
-        if (destination === '/dashboard') {
-          try {
-            // Authenticate as admin for dashboard access
-            const authResult = await AuthService.login('admin', 'admin', scannedData);
-            if (authResult.success) {
-              // Refresh authentication state
-              AuthService.refreshAuthState();
-              showStatusMessage('Authentication successful! Redirecting to dashboard...', 'success');
-              setTimeout(() => {
-                navigate(destination);
-              }, 1500);
-            } else {
-              showStatusMessage(`Authentication failed: ${authResult.error}`, 'error');
-            }
-          } catch (authError) {
-            console.error('Authentication error:', authError);
-            showStatusMessage(`Authentication failed: ${authError.message}`, 'error');
-          }
-        } else {
-          // For worker QR codes, redirect directly
+      if (verification.success) {
+        // Set the QR code in form data
+        setFormData(prev => ({ ...prev, qrCode: scannedData }));
+        showStatusMessage(`QR Code verified! Redirecting automatically...`, 'success');
+        
+        // Auto-redirect based on QR code
+        const destination = redirectionMap[scannedData];
+        if (destination) {
+          // Set authentication state
+          AuthService.setAuthenticated(true);
+          AuthService.setUserInfo({
+            id: scannedData,
+            role: getRoleFromQRCode(scannedData),
+            qrCode: scannedData
+          });
+          
+          // Redirect after a short delay
           setTimeout(() => {
             navigate(destination);
           }, 1500);
+        } else {
+          showStatusMessage(`Unknown QR Code: "${scannedData}". Please use a valid KMRL QR code.`, 'error');
         }
       } else {
-        // If no direct mapping, show error
-        showStatusMessage(`Invalid QR Code: "${scannedData}". Please use a valid KMRL QR code.`, 'error');
+        showStatusMessage(`Invalid QR Code: "${scannedData}". ${verification.error}`, 'error');
       }
     } catch (error) {
-      console.error('QR Code processing error:', error);
-      showStatusMessage(`QR Code processing failed: ${error.message}`, 'error');
+      showStatusMessage(`QR Code verification failed: ${error.message}`, 'error');
     }
   };
 
@@ -138,8 +134,6 @@ function LoginPage() {
       const loginResult = await AuthService.login(workerId, password, qrCode);
       
       if (loginResult.success) {
-        // Refresh authentication state
-        AuthService.refreshAuthState();
         showStatusMessage('Login successful! Redirecting...', 'success');
         
         // Determine destination based on user role or QR code
@@ -241,9 +235,6 @@ function LoginPage() {
                     </svg>
                     <span>Scan QR Code</span>
                   </button>
-                  <p className="text-xs text-gray-500 mt-2 text-center">
-                    Scan your QR code to access your dashboard
-                  </p>
               
               {formData.qrCode && (
                 <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
