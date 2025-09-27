@@ -1,0 +1,42 @@
+redirectsOrigin = "config"
+plugins = []
+headers = []
+
+[functions]
+
+  [functions."*"]
+
+[build]
+publish = "D:\\Make-a-thon\\kmrl\\build"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build"
+
+  [build.environment]
+  NODE_VERSION = "18"
+  REACT_APP_API_URL = "https://your-backend-url.herokuapp.com"
+  REACT_APP_ENVIRONMENT = "production"
+
+  [build.processing]
+
+    [build.processing.css]
+
+    [build.processing.html]
+
+    [build.processing.images]
+
+    [build.processing.js]
+
+  [build.services]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+force = false
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]

@@ -1,0 +1,12 @@
+{
+  "name": "kmrl-netlify-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for KMRL Metro System",
+  "main": "index.js",
+  "dependencies": {
+    "qrcode": "^1.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

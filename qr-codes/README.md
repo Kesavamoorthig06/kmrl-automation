@@ -1,54 +1,47 @@
-# KMRL QR Codes for Testing
+# KMRL Employee QR Codes
 
 ## Generated QR Codes
 
-This directory contains 5 QR codes for testing the KMRL Metro system:
+This directory contains QR codes for different KMRL employee roles. Each QR code contains login credentials that automatically log in users and redirect them to their respective dashboard pages.
 
-### 1. Operation Staff (23it279)
-- **File:** KMRL_Operation_Staff_23it279.png
-- **Data:** 23it279
-- **Purpose:** Access to Operation Staff Portal
+### Available QR Codes:
 
-### 2. Technical Department (TECH001)
-- **File:** KMRL_Technical_TECH001.png
-- **Data:** TECH001
-- **Purpose:** Access to Technical Portal
+| Role | QR Data | Worker ID | Password | Redirects to |
+|------|---------|-----------|----------|--------------|
+| Branding Officer | BRAND001 | BRAND001 | password | branding_officer.html |
+| Cleaning Crew | CLEAN001 | CLEAN001 | password | cleaning.html |
+| Technical Staff | TECH001 | TECH001 | password | technical.html |
+| Yard Operations | YARD001 | YARD001 | password | yard.html |
+| Administrator | ADMIN001 | ADMIN001 | password | operation staff.html |
 
-### 3. Yard Operations (YARD001)
-- **File:** KMRL_Yard_Operations_YARD001.png
-- **Data:** YARD001
-- **Purpose:** Access to Yard Operations Portal
+### How to Use:
 
-### 4. Branding Officer (BRAND001)
-- **File:** KMRL_Branding_Officer_BRAND001.png
-- **Data:** BRAND001
-- **Purpose:** Access to Branding Officer Portal
+1. **For Testing:**
+   - Open `login.html` in your browser
+   - Click "Open Camera" button
+   - Scan any of the QR codes in this directory
+   - You will be automatically logged in and redirected
 
-### 5. Cleaning Crew (CLEAN001)
-- **File:** KMRL_Cleaning_Crew_CLEAN001.png
-- **Data:** CLEAN001
-- **Purpose:** Access to Cleaning Crew Portal
+2. **For Employees:**
+   - Each employee should scan their role-specific QR code
+   - The system will automatically fill in credentials and log them in
+   - They will be redirected to their appropriate dashboard
 
-## How to Test
+### Files in this directory:
 
-1. **Print the QR codes** or display them on another device
-2. **Open the KMRL login page** in your browser
-3. **Click "📱 Scan QR Code"** button
-4. **Allow camera permissions** when prompted
-5. **Point your camera** at any of the QR codes
-6. **Verify the detection** - the QR code data should appear in the form
-7. **Login with password "demo123"** to test the full flow
+- `KMRL_Branding_Officer_BRAND001.png` - Branding Officer QR Code
+- `KMRL_Cleaning_Crew_CLEAN001.png` - Cleaning Crew QR Code  
+- `KMRL_Technical_Staff_TECH001.png` - Technical Staff QR Code
+- `KMRL_Yard_Operations_YARD001.png` - Yard Operations QR Code
+- `KMRL_Administrator_ADMIN001.png` - Administrator QR Code
 
-## Expected Behavior
+Each QR code also has a corresponding `_credentials.txt` file with detailed information.
 
-- Each QR code should be detected correctly
-- The scanned data should populate the QR Code field
-- Login should redirect to the appropriate worker portal based on the QR code
+### Security Notes:
 
-## Troubleshooting
+- These QR codes are for testing purposes only
+- In production, use unique, secure passwords for each role
+- Consider implementing proper authentication and encryption
+- QR codes should be kept secure and not shared publicly
 
-- **Camera not working:** Check browser permissions
-- **QR code not detected:** Ensure good lighting and steady hands
-- **Wrong data detected:** Verify the QR code is not damaged or blurry
-
-Generated on: 2025-09-23T03:03:44.136Z
+Generated on: 25/9/2025, 12:13:54 am

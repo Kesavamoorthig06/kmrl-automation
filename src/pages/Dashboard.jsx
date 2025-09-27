@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { RefreshCw, XCircle, CheckCircle, Users, BarChart3, Target, Activity, Zap } from "lucide-react";
+import { RefreshCw, XCircle, CheckCircle, Users, BarChart3, Target, Activity, Zap, MessageCircle } from "lucide-react";
 import SelectedTrainsDashboard from "./SelectedTrainsDashboard.jsx";
 import Navbar from "../components/Navbar.jsx";
 import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
@@ -11,15 +11,21 @@ import ConfirmationAlert from "../components/dashboard/ConfirmationAlert.jsx";
 import ConstraintsModal from "../components/dashboard/ConstraintsModal.jsx";
 import ReasonModal from "../components/dashboard/ReasonModal.jsx";
 import TrainDetailsModal from "../components/dashboard/TrainDetailsModal.jsx";
-import SystemStatus from "../components/dashboard/SystemStatus.jsx";
+import DeploymentStatusCards from "../components/dashboard/DeploymentStatusCards.jsx";
+import SystemStatusAnalyticsBanner from "../components/SystemStatusAnalyticsBanner.jsx";
+import AIChatbot from "../components/AIChatbot.jsx";
 // Removed debug component to maintain minimal theme
 // Removed unused CSV parsing imports - now using MLDataService
 import MLDataService from "../services/MLDataService.js";
-import AuthService from "../services/AuthService.js";
+import { useTranslation } from "../hooks/useTranslation.js";
+import { useLanguage } from "../contexts/LanguageContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const { t } = useTranslation();
+  const { language, switchLanguage } = useLanguage();
   const navigate = useNavigate();
+  
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +51,7 @@ function Dashboard() {
     cleaningDetailing: false,
     stablingGeometry: false
   });
+  const [isBannerCollapsed, setIsBannerCollapsed] = useState(false);
   const [serverStatus, setServerStatus] = useState('unknown'); // 'connected', 'disconnected', 'unknown'
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
   const [realTimeData, setRealTimeData] = useState(null);
@@ -63,34 +70,21 @@ function Dashboard() {
     if (page === 'selection') {
       setCurrentPage('selection');
     } else if (page === 'dashboard') {
-      setCurrentPage('dashboard');
-    } else if (page === 'analytics') {
-      // Navigate to analytics page with selected trains
-      window.location.href = '/analytics';
+      setCurrentPage('selection'); // Show main dashboard (train selection table)
     } else if (page === 'alerts') {
-      // Navigate to alerts page
-      window.location.href = '/alerts';
+      // Navigate to alerts page using React Router
+      navigate('/alerts');
     } else if (page === 'settings') {
       // Handle settings page - you can implement this later
       console.log('Settings page requested');
     }
   };
 
-  // Check authentication on component mount
-  useEffect(() => {
-    if (!AuthService.isAuthenticated()) {
-      navigate('/login');
-      return;
-    }
-  }, [navigate]);
-
   // Load CSV data on component mount
   useEffect(() => {
-    if (AuthService.isAuthenticated()) {
-      loadCSVData();
-      checkServerStatus();
-      initializeMLData();
-    }
+    loadCSVData();
+    checkServerStatus();
+    initializeMLData();
   }, []);
 
   // Initialize ML data service
@@ -140,13 +134,6 @@ function Dashboard() {
     setLastUpdateTime(new Date());
   }, [trains, performanceMetrics]);
 
-  // Save selected trains to localStorage whenever they change
-  useEffect(() => {
-    if (selectedTrains.size > 0) {
-      localStorage.setItem('selectedTrains', JSON.stringify(Array.from(selectedTrains)));
-    }
-  }, [selectedTrains]);
-
   // Handle refresh functionality
   const handleRefresh = () => {
     setLastUpdateTime(new Date());
@@ -188,15 +175,14 @@ function Dashboard() {
   const loadCSVData = async () => {
     try {
       setLoading(true);
+      console.log('🔄 Dashboard: Starting to load ML data...');
       // Load ML data using MLDataService
       const mlData = await MLDataService.loadMLData();
       
+      console.log('📊 Dashboard: ML data loaded:', mlData?.length, 'records');
+      
       if (!mlData || mlData.length === 0) {
-        setError('No train data available. The ML analysis CSV file may be empty or corrupted.');
-        setTrains([]);
-        setSelectedTrains(new Set());
-        setPerformanceMetrics(null);
-        return;
+        throw new Error('No ML data available');
       }
       
       setTrains(mlData);
@@ -213,7 +199,7 @@ function Dashboard() {
       // Get performance metrics from MLDataService
       const summary = MLDataService.getDashboardSummary();
       const metrics = MLDataService.getPerformanceMetrics();
-      setPerformanceMetrics({
+        setPerformanceMetrics({
         totalTrains: summary.totalTrains,
         availableTrains: summary.availableTrains,
         maintenanceTrains: summary.maintenanceTrains,
@@ -223,13 +209,10 @@ function Dashboard() {
       });
       
       setError(null);
-      console.log('✅ Dashboard data loaded successfully');
+      console.log('✅ Dashboard: Successfully loaded ML data');
     } catch (err) {
       console.error('❌ Error loading ML data:', err);
       setError('Failed to load ML analysis data. Please ensure the CSV file is available.');
-      setTrains([]);
-      setSelectedTrains(new Set());
-      setPerformanceMetrics(null);
     } finally {
       setLoading(false);
     }
@@ -721,25 +704,19 @@ function Dashboard() {
     setCurrentPage('deployment-success');
   };
 
+
   const handleRerunSimulation = async () => {
     try {
       console.log("Starting ML simulation rerun...");
       
-      // Use AuthService to call the API
-      const result = await AuthService.rerunSimulation();
+      // Refresh ML data
+      await MLDataService.refresh();
       
-      if (result.success) {
-        // Refresh ML data locally
-        await MLDataService.refresh();
-        
-        // Reload the data
-        await loadCSVData();
-        
-        // Show success message
-        alert("ML simulation completed successfully! Fresh data has been loaded.");
-      } else {
-        alert(`ML simulation failed: ${result.error}`);
-      }
+      // Reload the data
+      await loadCSVData();
+      
+      // Show success message
+      alert("ML simulation completed successfully! Fresh data has been loaded.");
     } catch (error) {
       console.error("Error running ML simulation:", error);
       
@@ -792,7 +769,7 @@ function Dashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading ML Analysis Data...</p>
+          <p className="text-gray-600">{t('loading')} ML Analysis Data...</p>
           <p className="text-sm text-gray-500 mt-2">Please wait while we load the train data...</p>
         </div>
       </div>
@@ -815,7 +792,7 @@ function Dashboard() {
               onClick={handleRefresh}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Retry
+              {t('retry')}
             </button>
           </div>
         </div>
@@ -823,7 +800,7 @@ function Dashboard() {
     );
   }
 
-  // Show dashboard if currentPage is 'dashboard'
+  // Show selected trains dashboard when user confirms selection
   if (currentPage === 'dashboard') {
     return (
       <SelectedTrainsDashboard 
@@ -837,7 +814,7 @@ function Dashboard() {
   // Show deployment success page
   if (currentPage === 'deployment-success') {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         {/* Navbar */}
         <Navbar 
           currentPage={currentPage} 
@@ -846,26 +823,26 @@ function Dashboard() {
         />
         
         {/* Header */}
-        <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
-              <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
                 <img 
                   src="/metro-logo.png" 
                   alt="Metro Logo" 
                   className="h-12 w-12 object-contain"
                 />
                 <div>
-                  <h1 className="text-3xl font-bold text-black">Deployment Success</h1>
-                  <p className="text-gray-700 mt-1">Train deployment completed successfully</p>
+                  <h1 className="text-3xl font-bold text-green-800 dark:text-green-400">{t('deploymentSuccess')}</h1>
+                  <p className="text-green-700 dark:text-green-300 mt-1">{t('trainDeploymentCompleted')}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-black"></div>
-                  <span className="text-sm text-gray-700">System: Online</span>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-sm text-green-700 dark:text-green-300">System: Online</span>
                 </div>
-                <div className="text-sm text-gray-700">
+                <div className="text-sm text-gray-700 dark:text-gray-300">
                   {new Date().toLocaleString()}
                 </div>
               </div>
@@ -877,133 +854,66 @@ function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Success Message */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4 border-2 border-black">
-              <CheckCircle className="h-10 w-10 text-black" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-50 dark:bg-green-900/20 rounded-full mb-4 border-2 border-green-200 dark:border-green-700">
+              <CheckCircle className="h-10 w-10 text-green-700 dark:text-green-400" />
             </div>
-            <h2 className="text-4xl font-bold text-black mb-2">Deployment Successful!</h2>
-            <p className="text-xl text-gray-700">All selected trains have been successfully deployed</p>
+            <h2 className="text-4xl font-bold text-green-800 dark:text-green-400 mb-2">{t('deploymentSuccessful')}</h2>
+            <p className="text-xl text-green-700 dark:text-green-300">{t('allSelectedTrainsDeployed')}</p>
           </div>
 
-          {/* Deployment Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-black">
-              <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg border border-gray-300">
-                  <Users className="h-6 w-6 text-black" />
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-black">Trains Deployed</h3>
-                  <p className="text-3xl font-bold text-black">{selectedTrains.size}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-black">
-              <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg border border-gray-300">
-                  <BarChart3 className="h-6 w-6 text-black" />
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-black">Success Rate</h3>
-                  <p className="text-3xl font-bold text-black">100%</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-black">
-              <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg border border-gray-300">
-                  <Target className="h-6 w-6 text-black" />
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-black">Crews Notified</h3>
-                  <p className="text-3xl font-bold text-black">3</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Crew Notifications */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border-2 border-black">
-            <h3 className="text-2xl font-bold text-black mb-6 flex items-center">
-              <CheckCircle className="h-6 w-6 text-black mr-2" />
-              Crew Notifications Sent
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
-                <div className="mb-2">
-                  <h4 className="font-semibold text-black">Cleaning Crew</h4>
-                </div>
-                <p className="text-sm text-gray-700">Prepare for interior deep-cleaning of {selectedTrains.size} trains</p>
-              </div>
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
-                <div className="mb-2">
-                  <h4 className="font-semibold text-black">Loco-Pilot Crew</h4>
-                </div>
-                <p className="text-sm text-gray-700">Ready for train operation and route preparation</p>
-              </div>
-              <div className="bg-gray-50 border border-gray-300 rounded-lg p-4">
-                <div className="mb-2">
-                  <h4 className="font-semibold text-black">Depot Rollout Crew</h4>
-                </div>
-                <p className="text-sm text-gray-700">Prepare for train deployment and bay management</p>
-              </div>
-            </div>
-          </div>
+          {/* Deployment Status Cards */}
+          <DeploymentStatusCards 
+            selectedTrainsCount={selectedTrains.size}
+            t={t}
+          />
 
           {/* Deployment Timeline */}
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border-2 border-black">
-            <h3 className="text-2xl font-bold text-black mb-6 flex items-center">
-              <BarChart3 className="h-6 w-6 text-black mr-2" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-8 border border-blue-200 dark:border-blue-700 hover:shadow-md transition-all duration-300">
+            <h3 className="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-6 flex items-center">
+              <BarChart3 className="h-6 w-6 text-blue-700 dark:text-blue-400 mr-2" />
               Deployment Timeline
             </h3>
             <div className="space-y-6">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 border border-gray-300">
-                  <CheckCircle className="h-5 w-5 text-black" />
+              <div className="flex items-start hover:bg-blue-50 dark:hover:bg-blue-900/20 p-3 rounded-lg transition-all duration-300 cursor-pointer">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mr-4 border border-green-200 dark:border-green-700">
+                  <CheckCircle className="h-5 w-5 text-green-700 dark:text-green-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-black">Deployment Initiated</p>
-                  <p className="text-sm text-gray-700 mt-1">All systems ready for train deployment</p>
-                  <span className="text-xs text-gray-500 mt-2 block">{new Date().toLocaleTimeString()}</span>
+                  <p className="font-semibold text-gray-900 dark:text-white">Deployment Initiated</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">All systems ready for train deployment</p>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-2 block">{new Date().toLocaleTimeString()}</span>
                 </div>
               </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 border border-gray-300">
-                  <CheckCircle className="h-5 w-5 text-black" />
+              <div className="flex items-start hover:bg-blue-50 dark:hover:bg-blue-900/20 p-3 rounded-lg transition-all duration-300 cursor-pointer">
+                <div className="flex-shrink-0 w-8 h-8 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mr-4 border border-blue-200 dark:border-blue-700">
+                  <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-black">Crew Notifications Sent</p>
-                  <p className="text-sm text-gray-700 mt-1">All three crews have been notified</p>
-                  <span className="text-xs text-gray-500 mt-2 block">{new Date().toLocaleTimeString()}</span>
+                  <p className="font-semibold text-gray-900 dark:text-white">{t('crewNotificationsSent')}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{t('allThreeCrewsNotified')}</p>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-2 block">{new Date().toLocaleTimeString()}</span>
                 </div>
               </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-4 border border-gray-300">
-                  <CheckCircle className="h-5 w-5 text-black" />
+              <div className="flex items-start hover:bg-blue-50 dark:hover:bg-blue-900/20 p-3 rounded-lg transition-all duration-300 cursor-pointer">
+                <div className="flex-shrink-0 w-8 h-8 bg-teal-50 dark:bg-teal-900/20 rounded-full flex items-center justify-center mr-4 border border-teal-200 dark:border-teal-700">
+                  <CheckCircle className="h-5 w-5 text-teal-700 dark:text-teal-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-black">Deployment Complete</p>
-                  <p className="text-sm text-gray-700 mt-1">All {selectedTrains.size} trains successfully deployed</p>
-                  <span className="text-xs text-gray-500 mt-2 block">{new Date().toLocaleTimeString()}</span>
+                  <p className="font-semibold text-gray-900 dark:text-white">{t('deploymentComplete')}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{t('allTrainsSuccessfullyDeployed', { count: selectedTrains.size })}</p>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-2 block">{new Date().toLocaleTimeString()}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-center space-x-4">
+          {/* Action Buttons - Only View Dashboard button */}
+          <div className="flex justify-center">
             <button
               onClick={() => setCurrentPage('selection')}
-              className="px-8 py-3 bg-white text-black border-2 border-black rounded-lg hover:bg-black hover:text-white transition-colors font-medium shadow-lg hover:shadow-xl"
+              className="px-8 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-2 border-black dark:border-gray-600 rounded-none hover:bg-black dark:hover:bg-gray-700 hover:text-white transition-colors font-medium shadow-lg hover:shadow-xl"
             >
-              New Deployment
-            </button>
-            <button
-              onClick={() => setCurrentPage('dashboard')}
-              className="px-8 py-3 bg-white text-black border-2 border-black rounded-lg hover:bg-black hover:text-white transition-colors font-medium shadow-lg hover:shadow-xl"
-            >
-              View Dashboard
+{t('viewDashboard')}
             </button>
           </div>
         </div>
@@ -1011,238 +921,86 @@ function Dashboard() {
     );
   }
 
+
   // Clean minimal dashboard render
   
+
   return (
-    <div className="min-h-screen bg-white font-light">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Navbar */}
       <Navbar 
         currentPage={currentPage} 
         onPageChange={handleNavbarNavigation}
-        userInfo={{ name: 'Admin User', role: 'Operations Manager' }}
-      />
-      
-      <style jsx>{`
-        /* Table alignment and sizing */
-        .table {
-          width: 100%;
-          border-collapse: collapse;
-          table-layout: fixed; /* <-- stable column widths (required) */
-        }
-
-        /* Vertically center all table cells and prevent overflow shifting layout */
-        .table th, .table td {
-          vertical-align: middle;
-          padding: 12px 16px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        /* Right-align the Mileage column (7th column) */
-        .table th:nth-child(7),
-        .table td:nth-child(7) {
-          text-align: right;
-        }
-
-        /* Center-align most other non-numeric columns */
-        .table th:nth-child(1), .table td:nth-child(1),
-        .table th:nth-child(2), .table td:nth-child(2),
-        .table th:nth-child(3), .table td:nth-child(3),
-        .table th:nth-child(5), .table td:nth-child(5),
-        .table th:nth-child(6), .table td:nth-child(6),
-        .table th:nth-child(8), .table td:nth-child(8),
-        .table th:nth-child(9), .table td:nth-child(9) {
-          text-align: center;
-        }
-
-        /* remove stray header transforms if any */
-        .table thead th { transform: none !important; }
-
-        /* Make table headers bold and consistent */
-        .table th {
-          font-weight: 800;
-          background-color: #f8f9fa;
-          border-bottom: 2px solid #e5e7eb;
-          color: #1f2937;
-        }
-
-        /* Improved row spacing */
-        .table tbody tr {
-          border-bottom: 1px solid #e5e7eb;
-        }
-
-        .table tbody tr:hover {
-          background-color: #f3f4f6;
-        }
-
-        /* Make checkboxes larger and vertically centered */
-        .table input[type="checkbox"] {
-          width: 20px;
-          height: 20px;
-          vertical-align: middle;
-        }
-
-        /* Score color coding - Monochrome */
-        .score-excellent {
-          background-color: #f3f4f6;
-          color: #111827;
-          border: 1px solid #d1d5db;
-        }
-
-        .score-good {
-          background-color: #f9fafb;
-          color: #1f2937;
-          border: 1px solid #d1d5db;
-        }
-
-        .score-average {
-          background-color: #e5e7eb;
-          color: #374151;
-          border: 1px solid #9ca3af;
-        }
-
-        .score-poor {
-          background-color: #d1d5db;
-          color: #111827;
-          border: 1px solid #6b7280;
-        }
-
-        /* Status color coding - Subtle red and green */
-        .status-available {
-          background-color: #f0fdf4;
-          color: #166534;
-          border: 1px solid #bbf7d0;
-        }
-
-        .status-unavailable {
-          background-color: #fef2f2;
-          color: #991b1b;
-          border: 1px solid #fecaca;
-        }
-
-        /* Subtle background colors for table rows */
-        .bg-green-25 {
-          background-color: #f8fffe;
-        }
-
-        .bg-red-25 {
-          background-color: #fffbfb;
-        }
-
-        /* Score badge styling - Neutral gray scale */
-        .score-badge {
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-weight: 700;
-          font-size: 0.875rem;
-          display: inline-block;
-          min-width: 80px;
-          text-align: center;
-          font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          letter-spacing: -0.01em;
-          border: 1px solid #d1d5db;
-        }
-
-        /* Stabling/Branding badges - All gray */
-        .stabling-badge,
-        .branding-badge {
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-weight: 700;
-          font-size: 0.875rem;
-          display: inline-block;
-          min-width: 80px;
-          text-align: center;
-          font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          letter-spacing: -0.01em;
-          border: 1px solid #d1d5db;
-        }
-
-        /* Mileage and Last Cleaned font styling to match score */
-        .mileage-text,
-        .last-cleaned-text {
-          font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          letter-spacing: -0.01em;
-          font-weight: 600;
-        }
-
-        /* Rank number font styling to match score */
-        .rank-text {
-          font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          letter-spacing: -0.01em;
-          font-weight: 600;
-        }
-
-        .stabling-badge-high {
-          background-color: #f9fafb;
-          color: #111827;
-          border: 1px solid #d1d5db;
-        }
-
-        .stabling-badge-medium {
-          background-color: #f3f4f6;
-          color: #1f2937;
-          border: 1px solid #9ca3af;
-        }
-
-        .stabling-badge-low {
-          background-color: #e5e7eb;
-          color: #374151;
-          border: 1px solid #6b7280;
-        }
-
-        /* Branding Priority specific colors matching the image */
-        .branding-badge-high {
-          background-color: #f3e8ff; /* Light purple/pink for high priority (8, 7) */
-          color: #7c3aed;
-          border: 1px solid #d8b4fe;
-        }
-
-        .branding-badge-medium {
-          background-color: #dbeafe; /* Light blue for medium priority (6, 5) */
-          color: #2563eb;
-          border: 1px solid #93c5fd;
-        }
-
-        .branding-badge-low {
-          background-color: #f8fafc; /* Light gray/white for low priority (1, 2) */
-          color: #64748b;
-          border: 1px solid #e2e8f0;
-        }
-
-        /* Ensure table takes full width */
-        .table-container {
-          width: 100%;
-          min-width: 1200px;
-        }
-      `}</style>
-      {/* Header */}
-      <DashboardHeader 
-        lastUpdateTime={lastUpdateTime}
-        serverStatus={serverStatus}
-        onExportCSV={handleExportCSV}
-        onRerunSimulation={handleRerunSimulation}
-        isRealTimeActive={isRealTimeActive}
-        optimizationResults={optimizationResults}
-        alerts={alerts}
       />
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 py-6">
-        {/* System Status - Compact Version */}
+      {/* Main Dashboard Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Header Section - Clean */}
         <div className="mb-6">
-          <SystemStatus 
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4">
+              <img 
+                src="/metro-logo.png" 
+                alt="Kochi Metro Logo" 
+                className="h-12 w-12 object-contain"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('companyName')}</h1>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{t('systemTitle')}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{t('systemOnline')}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{t('iotActive')}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-gray-500 dark:text-gray-400">{t('lastUpdated')}</div>
+                <div className="text-xs font-medium text-gray-900 dark:text-gray-100">
+                  {new Date().toLocaleString()}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex justify-end items-center">
+            <div className="flex gap-2 sm:gap-4 flex-wrap">
+              <button 
+                onClick={handleRerunSimulation}
+                className="px-4 sm:px-6 py-2 bg-white text-black border-2 border-black rounded-none hover:bg-black hover:text-white transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-300"
+              >
+                {t('rerunSimulation')}
+              </button>
+              <button 
+                onClick={handleExportCSV}
+                className="px-4 sm:px-6 py-2 bg-white text-black border-2 border-black rounded-none hover:bg-black hover:text-white transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-300"
+              >
+                {t('exportCsv')}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* System Status & Analytics Banner - Fixed under title */}
+        <div className="mb-8">
+          <SystemStatusAnalyticsBanner 
             realTimeData={realTimeData}
             optimizationResults={optimizationResults}
-            isRealTimeActive={isRealTimeActive}
             mlData={MLDataService.getTrainData()}
+            isCollapsed={isBannerCollapsed}
+            onToggle={() => setIsBannerCollapsed(!isBannerCollapsed)}
           />
         </div>
 
-        {/* Maintenance Alert */}
-        <MaintenanceAlert conflicts={conflicts} />
-
-        {/* Main Table */}
+        {/* Train Table */}
+        <div className="mb-8 bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl shadow-sm p-6">
         <TrainTable 
           trains={trains}
           selectedTrains={selectedTrains}
@@ -1250,19 +1008,21 @@ function Dashboard() {
           onUnavailableClick={handleUnavailableClick}
           onAvailableClick={handleAvailableClick}
           onTrainSelection={handleTrainSelection}
+            t={t}
         />
+        </div>
 
         {/* Selection Controls */}
+        <div className="mb-8">
         <SelectionControls 
           selectedTrains={selectedTrains}
           trains={trains}
           onSelectAllAvailable={handleSelectAllAvailable}
           onClearAll={handleClearAll}
-          onConfirmSelection={() => {
-            // Navigate to analytics page with selected trains
-            window.location.href = '/analytics';
-          }}
+          onConfirmSelection={() => setCurrentPage('dashboard')}
+          t={t}
         />
+        </div>
 
         {/* Confirmation Alert */}
         <ConfirmationAlert showConfirmation={showConfirmation} />
@@ -1292,6 +1052,9 @@ function Dashboard() {
           trainMetrics={trainMetrics}
           onClose={() => setShowTrainModal(false)}
         />
+
+        {/* AI Chatbot - Always available as floating button */}
+        <AIChatbot />
       </div>
     </div>
   );

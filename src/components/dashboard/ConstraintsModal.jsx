@@ -38,16 +38,20 @@ const ConstraintsModal = ({
           {/* Train Image - Only show for Unavailable trains */}
           {selectedTrainForConstraints.status === "Unavailable" && (
             <div className="mb-6 flex justify-center">
-              <div className="relative">
-                <img 
-                  src="/WhatsApp Image 2025-09-11 at 16.53.54_53238686.jpg" 
-                  alt="Train Maintenance Status" 
-                  className="w-full max-w-md h-auto rounded-lg shadow-lg border-2 border-red-200"
-                  style={{ maxHeight: '300px', objectFit: 'contain' }}
-                />
-                <div className="absolute -top-1 -right-1 bg-red-600 text-white px-1.5 py-0.5 rounded-full text-xs font-medium">
+              <div className="relative bg-white rounded-xl p-4 shadow-lg border-2 border-red-200">
+                <div className="flex justify-center">
+                  <img 
+                    src="/train_maintenance_overlay.jpg" 
+                    alt="Train Maintenance Status" 
+                    className="max-w-full h-auto rounded-lg shadow-md"
+                    style={{ maxHeight: '350px', objectFit: 'contain' }}
+                  />
+                </div>
+                {/* Maintenance badge */}
+                <div className="absolute -top-2 -right-2 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                   Maintenance Required
                 </div>
+                {/* Removed bogie annotation overlay as requested */}
               </div>
             </div>
           )}

@@ -1,0 +1,169 @@
+export const ml = {
+  // Dashboard Header
+  companyName: "കൊച്ചി മെട്രോ റെയിൽ ലിമിറ്റഡ്",
+  systemTitle: "എംഎൽ-പവർ ട്രെയിൻ ഇൻഡക്ഷൻ പ്ലാനിംഗ് സിസ്റ്റം",
+  platformTitle: "അഡ്വാൻസ്ഡ് ഓപ്പറേഷൻ മാനേജ്മെന്റ് പ്ലാറ്റ്ഫോം",
+  systemOnline: "സിസ്റ്റം ഓൺലൈൻ",
+  iotActive: "ഐഒടി സജീവം",
+  lastUpdated: "അവസാനം അപ്ഡേറ്റ് ചെയ്തത്",
+  
+  // Navigation
+  dashboard: "ഡാഷ്ബോർഡ്",
+  alerts: "അലേർട്ടുകൾ",
+  settings: "ക്രമീകരണങ്ങൾ",
+  userSettings: "ഉപയോക്തൃ ക്രമീകരണങ്ങൾ",
+  systemConfiguration: "സിസ്റ്റം കോൺഫിഗറേഷൻ",
+  securityPermissions: "സുരക്ഷ & അനുമതികൾ",
+  appearance: "ദൃശ്യം",
+  notifications: "അറിയിപ്പുകൾ",
+  unread: "വായിക്കാത്തത്",
+  markAllAsRead: "എല്ലാം വായിച്ചതായി അടയാളപ്പെടുത്തുക",
+  
+  // System Status
+  systemStatus: "സിസ്റ്റം നില",
+  available: "ലഭ്യമാണ്",
+  maintenance: "പരിപാലനം",
+  violations: "ലംഘനങ്ങൾ",
+  total: "മൊത്തം",
+  avgScore: "ശരാശരി സ്കോർ",
+  avgMileage: "ശരാശരി മൈലേജ്",
+  topPerformer: "മികച്ച പ്രകടനം",
+  brandingIssues: "ബ്രാൻഡിംഗ് പ്രശ്നങ്ങൾ",
+  
+  // Train Table
+  trainInductionList: "ട്രെയിൻ റാങ്ക് ഇൻഡക്ഷൻ ലിസ്റ്റ്",
+  selectedTrains: "തിരഞ്ഞെടുത്തത്",
+  availableTrains: "ലഭ്യമായ ട്രെയിനുകൾ",
+  rank: "റാങ്ക്",
+  trainId: "ട്രെയിൻ ഐഡി",
+  status: "സ്റ്റാറ്റസ്",
+  score: "സ്കോർ",
+  stablingBay: "സ്റ്റേബ്ലിംഗ് ബേ",
+  brandingPriority: "ബ്രാൻഡിംഗ് പ്രാധാന്യം",
+  mileage: "മൈലേജ്",
+  lastCleaned: "അവസാനം വൃത്തിയാക്കിയത്",
+  deployable: "വിന്യസിക്കാവുന്നത്",
+  
+  // Selection Controls
+  selectedTrainsCount: "തിരഞ്ഞെടുത്ത ട്രെയിനുകൾ",
+  availableCount: "ലഭ്യമാണ്",
+  clearAll: "എല്ലാം മായ്ക്കുക",
+  confirmAnalytics: "ട്രെയിൻ വിന്യാസം സ്ഥിരീകരിക്കുക",
+  
+  // Buttons
+  rerunSimulation: "സിമുലേഷൻ വീണ്ടും പ്രവർത്തിപ്പിക്കുക",
+  exportCsv: "സിഎസ്വി എക്സ്പോർട്ട് ചെയ്യുക",
+  
+  // Alerts
+  systemAlerts: "സിസ്റ്റം അലേർട്ടുകൾ",
+  monitoringNotifications: "മോണിറ്ററിംഗും അറിയിപ്പുകളും",
+  noAlerts: "അലേർട്ടുകളില്ല",
+  allSystemsRunning: "എല്ലാ സിസ്റ്റങ്ങളും സുഗമമായി പ്രവർത്തിക്കുന്നു",
+  noAlertsType: "ഈ സമയത്ത് {type} അലേർട്ടുകളില്ല",
+  
+  // Alert Types
+  all: "എല്ലാം",
+  critical: "നിർണായകം",
+  warning: "മുന്നറിയിപ്പ്",
+  info: "വിവരം",
+  
+  // Language Switcher
+  switchToMalayalam: "മലയാളത്തിലേക്ക് മാറുക",
+  switchToEnglish: "ഇംഗ്ലീഷിലേക്ക് മാറുക",
+  switchToHindi: "ഹിന്ദിയിലേക്ക് മാറുക",
+
+  // Visualization
+  showCharts: "ചാർട്ടുകൾ കാണിക്കുക",
+  hideCharts: "ചാർട്ടുകൾ മറയ്ക്കുക",
+  dataVisualization: "ഡാറ്റ വിഷ്വലൈസേഷൻ",
+  fleetStatusDistribution: "ഫ്ലീറ്റ് സ്റ്റാറ്റസ് വിതരണം",
+  performanceOverview: "പ്രകടന അവലോകനം",
+  performanceTrends: "പ്രകടന പ്രവണതകൾ",
+  totalFleet: "മൊത്തം ഫ്ലീറ്റ്",
+  readyForDeployment: "വിന്യാസത്തിന് തയ്യാറാണ്",
+  systemEfficiency: "സിസ്റ്റം കാര്യക്ഷമത",
+  activeViolations: "സജീവ ലംഘനങ്ങൾ",
+  systemInsights: "സിസ്റ്റം ഇൻസൈറ്റുകൾ",
+  
+  // Additional System Status
+  service: "സേവനം",
+  efficiency: "കാര്യക്ഷമത",
+  cost: "ചെലവ്",
+  reliability: "വിശ്വസനീയത",
+  branding: "ബ്രാൻഡിംഗ്",
+  shortfall: "കുറവ്",
+  
+  // Alerts Page
+  systemAlerts: "സിസ്റ്റം അലേർട്ടുകൾ",
+  monitoringNotifications: "നിരീക്ഷണവും അറിയിപ്പുകളും",
+  loadingAlerts: "അലേർട്ടുകൾ ലോഡ് ചെയ്യുന്നു...",
+  fetchingNotifications: "ഏറ്റവും പുതിയ സിസ്റ്റം അറിയിപ്പുകൾ വരുന്നു",
+  noAlerts: "അലേർട്ടുകളൊന്നുമില്ല",
+  allSystemsRunning: "എല്ലാ സിസ്റ്റങ്ങളും സുഗമമായി പ്രവർത്തിക്കുന്നു",
+  noFilteredAlerts: "ഈ സമയത്ത് {filter} അലേർട്ടുകളൊന്നുമില്ല",
+  ongoing: "നടന്നുകൊണ്ടിരിക്കുന്നു",
+  completed: "പൂർത്തിയായി",
+  
+  // Selected Trains Dashboard
+  selectedTrainsDashboard: "തിരഞ്ഞെടുത്ത ട്രെയിനുകളുടെ ഡാഷ്ബോർഡ്",
+  deploymentReady: "വിന്യാസത്തിന് തയ്യാറാണ്",
+  trainsRankedByPerformance: "പ്രകടന അടിസ്ഥാനത്തിൽ റാങ്ക് ചെയ്ത ട്രെയിനുകൾ",
+  readyForDeployment: "വിന്യാസത്തിന് തയ്യാറാണ്",
+  selectionConfirmed: "തിരഞ്ഞെടുപ്പ് സ്ഥിരീകരിച്ചു",
+  selectedTrainsForDeployment: "വിന്യാസത്തിനായി തിരഞ്ഞെടുത്ത ട്രെയിനുകൾ (പ്രകടന അടിസ്ഥാനത്തിൽ റാങ്ക് ചെയ്തത്)",
+  totalMileage: "മൊത്തം മൈലേജ്",
+  
+  // Deployment Success Page
+  deploymentSuccess: "വിന്യാസ വിജയം",
+  trainDeploymentCompleted: "ട്രെയിൻ വിന്യാസം വിജയകരമായി പൂർത്തിയായി",
+  deploymentSuccessful: "വിന്യാസം വിജയകരമാണ്!",
+  allSelectedTrainsDeployed: "തിരഞ്ഞെടുത്ത എല്ലാ ട്രെയിനുകളും വിജയകരമായി വിന്യസിച്ചു",
+  trainsDeployed: "വിന്യസിച്ച ട്രെയിനുകൾ",
+  successRate: "വിജയ നിരക്ക്",
+  crewsNotified: "ക്രൂ അംഗങ്ങളെ അറിയിച്ചു",
+  crewNotificationsSent: "ക്രൂ അറിയിപ്പുകൾ അയച്ചു",
+  allThreeCrewsNotified: "മൂന്ന് ക്രൂ അംഗങ്ങളെയും അറിയിച്ചു",
+  deploymentComplete: "വിന്യാസം പൂർത്തിയായി",
+  allTrainsSuccessfullyDeployed: "എല്ലാ {count} ട്രെയിനുകളും വിജയകരമായി വിന്യസിച്ചു",
+  viewDashboard: "ഡാഷ്ബോർഡ് കാണുക",
+  
+  // Button Labels
+  modifySelection: "തിരഞ്ഞെടുപ്പ് പരിഷ്കരിക്കുക",
+  deployAll: "എല്ലാം വിന്യസിക്കുക",
+  
+  // Additional Missing Translations
+  selectAllAvailable: "ലഭ്യമായ എല്ലാം തിരഞ്ഞെടുക്കുക",
+  success: "വിജയം",
+  trainDeployedSuccessfully: "ട്രെയിൻ വിജയകരമായി വിന്യസിച്ചു!",
+  analyzingSystemMetrics: "സിസ്റ്റം മെട്രിക്സ് വിശകലനം ചെയ്യുന്നു...",
+  systemInsights: "സിസ്റ്റം ഇൻസൈറ്റുകൾ",
+  systemInsightsAnalytics: "സിസ്റ്റം ഇൻസൈറ്റുകളും വിശകലനവും",
+  insightsGenerated: "ഇൻസൈറ്റുകൾ സൃഷ്ടിച്ചു",
+  available: "ലഭ്യമാണ്",
+  efficiency: "കാര്യക്ഷമത",
+  maintenance: "പരിപാലനം",
+  violations: "ലംഘനങ്ങൾ",
+  totalMileage: "മൊത്തം മൈലേജ്",
+  estimatedCost: "അനുമാനിച്ച ചെലവ്",
+  co2Footprint: "CO2 കാൽപാദം",
+  performanceTrendAnalysis: "പ്രകടന പ്രവണത വിശകലനം",
+  performanceVisualization: "പ്രകടന വിഷ്വലൈസേഷൻ ഇവിടെ റെൻഡർ ചെയ്യും",
+  chartIntegration: "Chart.js അല്ലെങ്കിൽ സമാന ലൈബ്രറിയുമായുള്ള സംയോജനം",
+  high: "ഉയർന്ന",
+  medium: "ഇടത്തരം",
+  low: "കുറഞ്ഞ",
+  confidence: "ആത്മവിശ്വാസം",
+  impact: "ആഘാതം",
+  retry: "വീണ്ടും ശ്രമിക്കുക",
+  loading: "ലോഡ് ചെയ്യുന്നു",
+  error: "പിശക്",
+  rank: "റാങ്ക്",
+  trainId: "ട്രെയിൻ ഐഡി",
+  status: "സ്റ്റാറ്റസ്",
+  score: "സ്കോർ",
+  stablingBay: "സ്റ്റേബ്ലിംഗ് ബേ",
+  brandingPriority: "ബ്രാൻഡിംഗ് പ്രാധാന്യം",
+  mileage: "മൈലേജ്",
+  lastCleaned: "അവസാനം വൃത്തിയാക്കിയത്",
+  deployable: "വിന്യസിക്കാവുന്നത്"
+};

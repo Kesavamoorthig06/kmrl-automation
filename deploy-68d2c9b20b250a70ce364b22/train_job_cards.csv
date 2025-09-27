@@ -1,0 +1,26 @@
+train_id,job_card_number,job_card_status,work_order_type,priority_level,assigned_technician,estimated_completion_date,actual_completion_date,work_description,critical_issues,parts_required,maintenance_hours,quality_score,completion_status
+R-001,JOB-001,completed,preventive,medium,John Smith,2024-01-20,2024-01-18,Regular maintenance check,0,brake_pads,4,95,completed
+R-002,JOB-002,completed,corrective,high,Mike Johnson,2024-01-22,2024-01-21,Engine calibration,1,engine_sensors,6,92,completed
+R-003,JOB-003,open,corrective,critical,Sarah Wilson,2024-01-25,2024-01-25,Signal system repair,2,signal_components,8,0,open
+R-004,JOB-004,completed,preventive,low,David Brown,2024-01-18,2024-01-17,Cleaning and inspection,0,cleaning_supplies,2,98,completed
+R-005,JOB-005,open,corrective,high,Emily Davis,2024-01-24,2024-01-24,Electrical system fix,1,electrical_parts,5,0,open
+R-006,JOB-006,completed,preventive,medium,Robert Taylor,2024-01-19,2024-01-19,Oil change and filter,0,oil_filter,3,96,completed
+R-007,JOB-007,completed,corrective,medium,Lisa Anderson,2024-01-21,2024-01-20,Brake system adjustment,0,brake_fluid,4,94,completed
+R-008,JOB-008,open,corrective,critical,James Miller,2024-01-26,2024-01-26,Telecom system repair,2,telecom_equipment,7,0,open
+R-009,JOB-009,completed,preventive,low,Jennifer Garcia,2024-01-17,2024-01-16,General inspection,0,inspection_tools,2,97,completed
+R-010,JOB-010,completed,preventive,medium,Michael Martinez,2024-01-20,2024-01-19,Air conditioning check,0,ac_components,3,93,completed
+R-011,JOB-011,open,corrective,high,Amanda Rodriguez,2024-01-23,2024-01-23,Brake certificate renewal,1,brake_certificate,6,0,open
+R-012,JOB-012,completed,preventive,medium,Christopher Lee,2024-01-18,2024-01-18,Interior cleaning,0,cleaning_materials,2,95,completed
+R-013,JOB-013,completed,corrective,medium,Ashley White,2024-01-21,2024-01-21,Engine performance tune,0,engine_parts,5,91,completed
+R-014,JOB-014,open,corrective,critical,Daniel Harris,2024-01-25,2024-01-25,Electrical certificate renewal,2,electrical_certificate,8,0,open
+R-015,JOB-015,completed,preventive,low,Michelle Clark,2024-01-19,2024-01-19,Exterior cleaning,0,cleaning_supplies,2,96,completed
+R-016,JOB-016,completed,preventive,medium,Kevin Lewis,2024-01-20,2024-01-20,Signal system check,0,signal_test_equipment,3,94,completed
+R-017,JOB-017,open,corrective,high,Nicole Walker,2024-01-24,2024-01-24,Mechanical certificate renewal,1,mechanical_certificate,7,0,open
+R-018,JOB-018,completed,preventive,low,Andrew Hall,2024-01-17,2024-01-17,General maintenance,0,maintenance_tools,2,98,completed
+R-019,JOB-019,completed,corrective,medium,Rachel Allen,2024-01-22,2024-01-22,Telecom system check,0,telecom_test_equipment,4,92,completed
+R-020,JOB-020,completed,preventive,medium,Thomas Young,2024-01-18,2024-01-18,Interior inspection,0,inspection_equipment,2,95,completed
+R-021,JOB-021,completed,preventive,low,Stephanie King,2024-01-19,2024-01-19,Exterior inspection,0,inspection_tools,2,93,completed
+R-022,JOB-022,completed,preventive,medium,Matthew Wright,2024-01-20,2024-01-20,Engine diagnostics,0,diagnostic_equipment,3,97,completed
+R-023,JOB-023,completed,preventive,low,Lauren Lopez,2024-01-17,2024-01-17,General cleaning,0,cleaning_materials,2,96,completed
+R-024,JOB-024,completed,corrective,medium,Jonathan Hill,2024-01-21,2024-01-21,Brake system check,0,brake_test_equipment,4,90,completed
+R-025,JOB-025,completed,preventive,medium,Samantha Scott,2024-01-19,2024-01-19,Electrical system check,0,electrical_test_equipment,3,94,completed

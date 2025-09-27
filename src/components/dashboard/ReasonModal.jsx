@@ -44,20 +44,26 @@ const ReasonModal = ({
 
           {/* Train Image - Centered at Top */}
           <div className="flex flex-col items-center justify-center mb-8">
-            <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 shadow-md border border-gray-200 w-full max-w-3xl">
-              <h4 className="text-xl font-semibold text-gray-900 mb-6 text-center border-b border-gray-200 pb-3">
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 shadow-md border border-gray-200 w-full max-w-4xl">
+              <h4 className="text-xl font-semibold text-gray-900 mb-4 text-center border-b border-gray-200 pb-3">
                 Train Diagnostic Diagram
               </h4>
+              <p className="text-sm text-gray-600 text-center mb-6">
+                Detailed component analysis showing maintenance requirements and system status
+              </p>
               
               {/* Image Container with Perfect Centering */}
-              <div className="relative bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
+              <div className="relative bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
                 <div className="flex justify-center items-center">
                   <img 
-                    src="/train_diagram.jpg" 
-                    alt="Train Diagnostic Diagram" 
+                    src="/annotated_band_1.png" 
+                    alt="Train Diagnostic Diagram - Annotated Band Analysis" 
                     className="max-w-full h-auto rounded-lg shadow-sm"
-                    style={{ maxHeight: '500px', objectFit: 'contain' }}
+                    style={{ maxHeight: '450px', objectFit: 'contain' }}
                   />
+                </div>
+                <div className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg">
+                  Diagnostic View
                 </div>
               </div>
             </div>

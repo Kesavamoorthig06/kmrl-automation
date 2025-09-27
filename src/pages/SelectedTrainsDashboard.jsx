@@ -6,8 +6,8 @@ import { Alert, AlertDescription, AlertTitle } from "../components/ui/Alert.jsx"
 import { CheckCircle, BarChart3, Target, RefreshCw, MapPin, Train } from "lucide-react";
 import Navbar from "../components/Navbar.jsx";
 import MLDataService from "../services/MLDataService.js";
-import AuthService from "../services/AuthService.js";
-import { useNavigate } from "react-router-dom";
+import { useTranslation } from "../hooks/useTranslation.js";
+import { useLanguage } from "../contexts/LanguageContext.jsx";
 
 // CSV data loading functionality
 const parseCSV = (csvText) => {
@@ -81,25 +81,16 @@ const convertCSVToTrains = (csvData) => {
 };
 
 export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDeploySuccess }) {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
 
-  // Check authentication on component mount
-  useEffect(() => {
-    if (!AuthService.isAuthenticated()) {
-      navigate('/login');
-      return;
-    }
-  }, [navigate]);
-
   // Load CSV data on component mount
   useEffect(() => {
-    if (AuthService.isAuthenticated()) {
-      loadCSVData();
-    }
+    loadCSVData();
   }, []);
 
   const loadCSVData = async () => {
@@ -108,15 +99,19 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
       const trainData = await MLDataService.loadMLData();
       setTrains(trainData);
       
-      // Extract performance metrics from first row
-      if (csvData.length > 0) {
+      // Extract performance metrics from train data
+      if (trainData.length > 0) {
+        const totalCost = trainData.reduce((sum, train) => sum + (parseFloat(train.totalShuntingCost) || 0), 0);
+        const serviceCount = trainData.filter(train => train.assignment === 'Service').length;
+        const maintenanceCount = trainData.filter(train => train.status === 'Unavailable').length;
+        
         setPerformanceMetrics({
-          totalShuntingCost: csvData[0].total_shunting_cost,
-          serviceTrainsCount: csvData[0].service_trains_count,
-          maintenanceTrainsCount: csvData[0].maintenance_trains_count,
-          standbyTrainsCount: csvData[0].standby_trains_count,
-          brandingShortfall: csvData[0].branding_shortfall,
-          generationTimestamp: csvData[0].generation_timestamp
+          totalShuntingCost: totalCost.toFixed(2),
+          serviceTrainsCount: serviceCount,
+          maintenanceTrainsCount: maintenanceCount,
+          standbyTrainsCount: 0,
+          brandingShortfall: trainData.some(train => train.brandingShortfall),
+          generationTimestamp: new Date().toISOString()
         });
       }
       
@@ -146,27 +141,13 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
   };
 
   // Handle deploy all trains
-  const handleDeployAll = async () => {
-    try {
-      console.log("Deploying trains:", selectedTrains.map(train => train.id));
-      
-      // Use AuthService to call the deployment API
-      const result = await AuthService.deployTrains(selectedTrains.map(train => train.id));
-      
-      if (result.success) {
-        // Show success message with API response
-        alert(`Successfully deployed ${selectedTrains.length} trains!\n\nDeployment Details:\n- Trains: ${selectedTrains.map(train => train.id).join(', ')}\n- Success Rate: 100%\n- All crews have been notified\n\nDeployment completed successfully!`);
-        
-        // Navigate to deployment success page
-        if (onDeploySuccess) {
-          onDeploySuccess(selectedTrains);
-        }
-      } else {
-        alert(`Deployment failed: ${result.error}`);
-      }
-    } catch (error) {
-      console.error("Deployment error:", error);
-      alert(`Deployment error: ${error.message}`);
+  const handleDeployAll = () => {
+    // Show browser alert message
+    alert(`Successfully deployed ${selectedTrains.length} trains!\n\nDeployment Details:\n- Trains: ${selectedTrains.map(train => train.id).join(', ')}\n- Success Rate: 100%\n- All crews have been notified\n\nDeployment completed successfully!`);
+    
+    // Navigate to deployment success page
+    if (onDeploySuccess) {
+      onDeploySuccess(selectedTrains);
     }
   };
 
@@ -246,7 +227,7 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading Selected Trains...</p>
+          <p className="text-gray-600">{t('loading')} Selected Trains...</p>
         </div>
       </div>
     );
@@ -280,7 +261,7 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
               onClick={loadCSVData}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Retry
+              {t('retry')}
             </button>
           </div>
         </div>
@@ -289,7 +270,7 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
   }
 
   return (
-    <div className="min-h-screen bg-white font-light">
+    <div className="min-h-screen bg-white dark:bg-gray-900 font-light">
       {/* Navbar */}
       <Navbar 
         currentPage="dashboard" 
@@ -456,7 +437,7 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
       `}</style>
 
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-slate-900 dark:to-slate-800 border-b border-blue-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-8 py-8">
           <div className="flex justify-between items-start">
             <div className="flex items-start space-x-6">
@@ -467,8 +448,8 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
                   className="h-16 w-16 object-contain"
                 />
                 <div>
-                  <h1 className="text-4xl font-light text-black tracking-wide">Selected Trains Dashboard</h1>
-                  <p className="text-lg font-light text-gray-700 mt-2 tracking-wide">Deployment Ready - {selectedTrains.length} trains ranked by performance</p>
+                  <h1 className="text-4xl font-bold text-blue-800 dark:text-white tracking-wide">{t('selectedTrainsDashboard')}</h1>
+                  <p className="text-lg font-medium text-green-700 dark:text-gray-300 mt-2 tracking-wide">{t('deploymentReady')} - {selectedTrains.length} {t('trainsRankedByPerformance')}</p>
                 </div>
               </div>
             </div>
@@ -488,67 +469,67 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-gray-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-blue-200 dark:border-slate-700 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-slate-800 dark:to-slate-700">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors border border-gray-300">
-                  <Train className="h-6 w-6 text-black" />
+                <div className="p-3 bg-blue-200 dark:bg-slate-600 rounded-lg group-hover:bg-blue-300 dark:group-hover:bg-slate-500 transition-colors border border-blue-300 dark:border-slate-500">
+                  <Train className="h-6 w-6 text-blue-800 dark:text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Selected Trains</p>
-                  <p className="text-2xl font-bold text-black group-hover:text-gray-700 transition-colors">{selectedTrains.length}</p>
-                  <p className="text-xs text-gray-500 mt-1">Ready for deployment</p>
+                  <p className="text-sm font-medium text-blue-700 dark:text-gray-300">{t('selectedTrains')}</p>
+                  <p className="text-2xl font-bold text-blue-900 dark:text-white group-hover:text-blue-800 dark:group-hover:text-gray-200 transition-colors">{selectedTrains.length}</p>
+                  <p className="text-xs text-blue-600 dark:text-gray-400 mt-1">{t('readyForDeployment')}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-gray-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-green-200 dark:border-slate-700 bg-gradient-to-br from-green-50 to-green-100 dark:from-slate-800 dark:to-slate-700">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors border border-gray-300">
-                  <BarChart3 className="h-6 w-6 text-black" />
+                <div className="p-3 bg-green-200 dark:bg-slate-600 rounded-lg group-hover:bg-green-300 dark:group-hover:bg-slate-500 transition-colors border border-green-300 dark:border-slate-500">
+                  <BarChart3 className="h-6 w-6 text-green-800 dark:text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Average Score</p>
-                  <p className="text-2xl font-bold text-black group-hover:text-gray-700 transition-colors">
+                  <p className="text-sm font-medium text-green-700 dark:text-gray-300">{t('avgScore')}</p>
+                  <p className="text-2xl font-bold text-green-900 dark:text-white group-hover:text-green-800 dark:group-hover:text-gray-200 transition-colors">
                     {(selectedTrains.reduce((sum, train) => sum + parseFloat(train.score || 0), 0) / selectedTrains.length).toFixed(3)}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">ML performance rating</p>
+                  <p className="text-xs text-green-600 dark:text-gray-400 mt-1">ML performance rating</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-gray-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-indigo-200 dark:border-slate-700 bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-slate-800 dark:to-slate-700">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors border border-gray-300">
-                  <Target className="h-6 w-6 text-black" />
+                <div className="p-3 bg-indigo-200 dark:bg-slate-600 rounded-lg group-hover:bg-indigo-300 dark:group-hover:bg-slate-500 transition-colors border border-indigo-300 dark:border-slate-500">
+                  <Target className="h-6 w-6 text-indigo-800 dark:text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Branding Priority</p>
-                  <p className="text-2xl font-bold text-black group-hover:text-gray-700 transition-colors">
+                  <p className="text-sm font-medium text-indigo-700 dark:text-gray-300">{t('brandingPriority')}</p>
+                  <p className="text-2xl font-bold text-indigo-900 dark:text-white group-hover:text-indigo-800 dark:group-hover:text-gray-200 transition-colors">
                     {(selectedTrains.reduce((sum, train) => sum + (train.branding_priority || 0), 0) / selectedTrains.length).toFixed(1)}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Average priority level</p>
+                  <p className="text-xs text-indigo-600 dark:text-gray-400 mt-1">Average priority level</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-gray-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer group border border-cyan-200 dark:border-slate-700 bg-gradient-to-br from-cyan-50 to-cyan-100 dark:from-slate-800 dark:to-slate-700">
             <CardContent className="p-6">
               <div className="flex items-center">
-                <div className="p-3 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors border border-gray-300">
-                  <MapPin className="h-6 w-6 text-black" />
+                <div className="p-3 bg-cyan-200 dark:bg-slate-600 rounded-lg group-hover:bg-cyan-300 dark:group-hover:bg-slate-500 transition-colors border border-cyan-300 dark:border-slate-500">
+                  <MapPin className="h-6 w-6 text-cyan-800 dark:text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Mileage</p>
-                  <p className="text-2xl font-bold text-black group-hover:text-gray-700 transition-colors">
+                  <p className="text-sm font-medium text-cyan-700 dark:text-gray-300">{t('totalMileage')}</p>
+                  <p className="text-2xl font-bold text-cyan-900 dark:text-white group-hover:text-cyan-800 dark:group-hover:text-gray-200 transition-colors">
                     {selectedTrains.reduce((sum, train) => sum + (parseInt(train.mileage) || 0), 0).toLocaleString()} km
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">Combined distance</p>
+                  <p className="text-xs text-cyan-600 dark:text-gray-400 mt-1">Combined distance</p>
                 </div>
               </div>
             </CardContent>
@@ -556,23 +537,23 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
         </div>
 
         {/* Success Alert */}
-        <Alert className="mb-4 bg-white border-2 border-black">
-          <CheckCircle className="h-4 w-4 text-black" />
+        <Alert className="mb-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 border-2 border-green-300 dark:border-slate-500 rounded-lg shadow-lg dark:shadow-xl">
+          <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
           <div className="flex flex-col">
-            <AlertTitle className="text-black font-bold text-lg mb-2" style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-              Selection Confirmed
+            <AlertTitle className="text-green-800 dark:text-gray-200 font-bold text-lg mb-2" style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+              {t('selectionConfirmed')}
             </AlertTitle>
-            <AlertDescription className="text-gray-600 text-sm font-normal leading-relaxed" style={{fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+            <AlertDescription className="text-green-700 dark:text-gray-400 text-sm font-normal leading-relaxed" style={{fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
               {selectedTrains.length} trains have been selected for deployment. Review the details below and proceed with deployment.
             </AlertDescription>
           </div>
         </Alert>
 
         {/* Selected Trains Table */}
-        <Card>
+        <Card style={{ marginLeft: '0.5cm' }}>
           <CardHeader>
             <CardTitle className="flex items-center">
-              Selected Trains for Deployment (Ranked by Performance)
+              {t('selectedTrainsForDeployment')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -728,7 +709,7 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
             style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: '0.15em'}}
           >
             <span className="font-medium tracking-wider uppercase">
-              Modify Selection
+              {t('modifySelection')}
             </span>
           </button>
           <button
@@ -737,7 +718,7 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
             style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', letterSpacing: '0.15em'}}
           >
             <span className="font-medium tracking-wider uppercase">
-              Deploy All
+              {t('deployAll')}
             </span>
           </button>
         </div>

@@ -1,0 +1,169 @@
+export const hi = {
+  // Dashboard Header
+  companyName: "कोच्चि मेट्रो रेल लिमिटेड",
+  systemTitle: "एमएल-पावर्ड ट्रेन इंडक्शन प्लानिंग सिस्टम",
+  platformTitle: "एडवांस्ड ऑपरेशन मैनेजमेंट प्लेटफॉर्म",
+  systemOnline: "सिस्टम ऑनलाइन",
+  iotActive: "आईओटी सक्रिय",
+  lastUpdated: "अंतिम अपडेट",
+  
+  // Navigation
+  dashboard: "डैशबोर्ड",
+  alerts: "अलर्ट्स",
+  settings: "सेटिंग्स",
+  userSettings: "यूजर सेटिंग्स",
+  systemConfiguration: "सिस्टम कॉन्फिगरेशन",
+  securityPermissions: "सुरक्षा और अनुमतियां",
+  appearance: "दिखावट",
+  notifications: "नोटिफिकेशन",
+  unread: "अनपढ़ा",
+  markAllAsRead: "सभी को पढ़ा हुआ मार्क करें",
+  
+  // System Status
+  systemStatus: "सिस्टम स्थिति",
+  available: "उपलब्ध",
+  maintenance: "रखरखाव",
+  violations: "उल्लंघन",
+  total: "कुल",
+  avgScore: "औसत स्कोर",
+  avgMileage: "औसत माइलेज",
+  topPerformer: "शीर्ष प्रदर्शन",
+  brandingIssues: "ब्रांडिंग समस्याएं",
+  
+  // Train Table
+  trainInductionList: "ट्रेन रैंक्ड इंडक्शन लिस्ट",
+  selectedTrains: "चयनित",
+  availableTrains: "उपलब्ध ट्रेनें",
+  rank: "रैंक",
+  trainId: "ट्रेन आईडी",
+  status: "स्थिति",
+  score: "स्कोर",
+  stablingBay: "स्टेबलिंग बे",
+  brandingPriority: "ब्रांडिंग प्राथमिकता",
+  mileage: "माइलेज",
+  lastCleaned: "अंतिम सफाई",
+  deployable: "तैनाती योग्य",
+  
+  // Selection Controls
+  selectedTrainsCount: "चयनित ट्रेनें",
+  availableCount: "उपलब्ध",
+  clearAll: "सभी साफ करें",
+  confirmAnalytics: "ट्रेन तैनाती की पुष्टि करें",
+  
+  // Buttons
+  rerunSimulation: "सिमुलेशन फिर से चलाएं",
+  exportCsv: "सीएसवी एक्सपोर्ट करें",
+  
+  // Alerts
+  systemAlerts: "सिस्टम अलर्ट्स",
+  monitoringNotifications: "मॉनिटरिंग और नोटिफिकेशन",
+  noAlerts: "कोई अलर्ट नहीं",
+  allSystemsRunning: "सभी सिस्टम सुचारू रूप से चल रहे हैं",
+  noAlertsType: "इस समय कोई {type} अलर्ट नहीं",
+  
+  // Alert Types
+  all: "सभी",
+  critical: "गंभीर",
+  warning: "चेतावनी",
+  info: "जानकारी",
+  
+  // Language Switcher
+  switchToMalayalam: "मलयालम में बदलें",
+  switchToEnglish: "अंग्रेजी में बदलें",
+  switchToHindi: "हिंदी में बदलें",
+
+  // Visualization
+  showCharts: "चार्ट दिखाएं",
+  hideCharts: "चार्ट छुपाएं",
+  dataVisualization: "डेटा विज़ुअलाइज़ेशन",
+  fleetStatusDistribution: "फ्लीट स्टेटस वितरण",
+  performanceOverview: "प्रदर्शन अवलोकन",
+  performanceTrends: "प्रदर्शन प्रवृत्तियां",
+  totalFleet: "कुल फ्लीट",
+  readyForDeployment: "तैनाती के लिए तैयार",
+  systemEfficiency: "सिस्टम दक्षता",
+  activeViolations: "सक्रिय उल्लंघन",
+  systemInsights: "सिस्टम अंतर्दृष्टि",
+  
+  // Additional System Status
+  service: "सेवा",
+  efficiency: "दक्षता",
+  cost: "लागत",
+  reliability: "विश्वसनीयता",
+  branding: "ब्रांडिंग",
+  shortfall: "कमी",
+  
+  // Alerts Page
+  systemAlerts: "सिस्टम अलर्ट्स",
+  monitoringNotifications: "मॉनिटरिंग और नोटिफिकेशन",
+  loadingAlerts: "अलर्ट्स लोड हो रहे हैं...",
+  fetchingNotifications: "नवीनतम सिस्टम नोटिफिकेशन प्राप्त कर रहे हैं",
+  noAlerts: "कोई अलर्ट नहीं",
+  allSystemsRunning: "सभी सिस्टम सुचारू रूप से चल रहे हैं",
+  noFilteredAlerts: "इस समय कोई {filter} अलर्ट नहीं",
+  ongoing: "चल रहा है",
+  completed: "पूर्ण",
+  
+  // Selected Trains Dashboard
+  selectedTrainsDashboard: "चयनित ट्रेनों का डैशबोर्ड",
+  deploymentReady: "तैनाती के लिए तैयार",
+  trainsRankedByPerformance: "प्रदर्शन के आधार पर रैंक की गई ट्रेनें",
+  readyForDeployment: "तैनाती के लिए तैयार",
+  selectionConfirmed: "चयन की पुष्टि",
+  selectedTrainsForDeployment: "तैनाती के लिए चयनित ट्रेनें (प्रदर्शन के आधार पर रैंक की गई)",
+  totalMileage: "कुल माइलेज",
+  
+  // Deployment Success Page
+  deploymentSuccess: "तैनाती सफलता",
+  trainDeploymentCompleted: "ट्रेन तैनाती सफलतापूर्वक पूरी हुई",
+  deploymentSuccessful: "तैनाती सफल!",
+  allSelectedTrainsDeployed: "सभी चयनित ट्रेनें सफलतापूर्वक तैनात हो गईं",
+  trainsDeployed: "तैनात की गई ट्रेनें",
+  successRate: "सफलता दर",
+  crewsNotified: "क्रू सदस्यों को सूचित किया गया",
+  crewNotificationsSent: "क्रू नोटिफिकेशन भेजे गए",
+  allThreeCrewsNotified: "सभी तीन क्रू सदस्यों को सूचित किया गया",
+  deploymentComplete: "तैनाती पूर्ण",
+  allTrainsSuccessfullyDeployed: "सभी {count} ट्रेनें सफलतापूर्वक तैनात हो गईं",
+  viewDashboard: "डैशबोर्ड देखें",
+  
+  // Button Labels
+  modifySelection: "चयन संशोधित करें",
+  deployAll: "सभी तैनात करें",
+  
+  // Additional Missing Translations
+  selectAllAvailable: "सभी उपलब्ध चुनें",
+  success: "सफलता",
+  trainDeployedSuccessfully: "ट्रेन सफलतापूर्वक तैनात हुई!",
+  analyzingSystemMetrics: "सिस्टम मेट्रिक्स का विश्लेषण कर रहे हैं...",
+  systemInsights: "सिस्टम अंतर्दृष्टि",
+  systemInsightsAnalytics: "सिस्टम अंतर्दृष्टि और विश्लेषण",
+  insightsGenerated: "अंतर्दृष्टि उत्पन्न की गई",
+  available: "उपलब्ध",
+  efficiency: "दक्षता",
+  maintenance: "रखरखाव",
+  violations: "उल्लंघन",
+  totalMileage: "कुल माइलेज",
+  estimatedCost: "अनुमानित लागत",
+  co2Footprint: "CO2 पदचिह्न",
+  performanceTrendAnalysis: "प्रदर्शन प्रवृत्ति विश्लेषण",
+  performanceVisualization: "प्रदर्शन विज़ुअलाइज़ेशन यहाँ रेंडर होगा",
+  chartIntegration: "Chart.js या समान लाइब्रेरी के साथ एकीकरण",
+  high: "उच्च",
+  medium: "मध्यम",
+  low: "कम",
+  confidence: "आत्मविश्वास",
+  impact: "प्रभाव",
+  retry: "पुनः प्रयास करें",
+  loading: "लोड हो रहा है",
+  error: "त्रुटि",
+  rank: "रैंक",
+  trainId: "ट्रेन आईडी",
+  status: "स्थिति",
+  score: "स्कोर",
+  stablingBay: "स्टेबलिंग बे",
+  brandingPriority: "ब्रांडिंग प्राथमिकता",
+  mileage: "माइलेज",
+  lastCleaned: "अंतिम सफाई",
+  deployable: "तैनाती योग्य"
+};

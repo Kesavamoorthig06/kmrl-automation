@@ -1,6 +1,0 @@
-<input
-  type="checkbox"
-  checked={train.deployable}
-  disabled={train.status === "Unavailable"}
-  onChange={handleDeployableChange}
-/>

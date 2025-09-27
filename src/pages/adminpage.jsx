@@ -4,6 +4,7 @@ import {
 } from "../components/ui/Table";
 import { BadgeCheckbox } from "../components/ui/Badge";
 import Modal from "../components/ui/Modal";
+import AIChatbot from "../components/AIChatbot";
 import { useNavigate } from "react-router-dom";
 
 
@@ -148,6 +149,9 @@ export default function AdminPage() {
           {modalText}
         </Modal>
       </div>
+
+      {/* AI Chatbot Overlay */}
+      <AIChatbot />
     </div>
   );
 }

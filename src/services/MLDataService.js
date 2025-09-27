@@ -1,6 +1,8 @@
 // ML Data Service for KMRL Train Management System
 // Loads and processes ML-generated train optimization data
 
+import NetlifyAPIService from './NetlifyAPIService';
+
 class MLDataService {
   constructor() {
     this.trainData = null;
@@ -8,76 +10,102 @@ class MLDataService {
     this.callbacks = new Map();
   }
 
-  // Load ML-generated train data from CSV
+  // Load ML-generated train data from API
   async loadMLData() {
     try {
-      console.log('🔄 Loading ML data from CSV...');
-      const response = await fetch('/ml_analysis_data.csv');
+      console.log('🔄 Loading ML data from API...');
+      
+      // Use the new Netlify API service
+      try {
+        const apiData = await NetlifyAPIService.getTrainData();
+        if (apiData.success && apiData.data && apiData.data.trains) {
+          this.trainData = apiData.data.trains;
+          this.lastUpdate = new Date();
+          console.log('✅ Loaded ML data from API:', this.trainData.length, 'trains');
+          this.notifyCallbacks('data_loaded', this.trainData);
+          return this.trainData;
+        }
+      } catch (apiError) {
+        console.log('⚠️ API not available, falling back to local data...');
+      }
+
+      // Fallback to train-data API
+      try {
+        const apiResponse = await fetch('/.netlify/functions/train-data?file=ml_analysis');
+        if (apiResponse.ok) {
+          const apiData = await apiResponse.json();
+          if (apiData.success && apiData.data) {
+            this.trainData = apiData.data;
+            this.lastUpdate = new Date();
+            console.log('✅ Loaded ML data from train-data API:', this.trainData.length, 'trains');
+            this.notifyCallbacks('data_loaded', this.trainData);
+            return this.trainData;
+          }
+        }
+      } catch (apiError) {
+        console.log('⚠️ Train-data API not available, falling back to CSV...');
+      }
+      
+      // Fallback to CSV if API is not available
+      const response = await fetch(`/ml_analysis_data.csv?t=${Date.now()}`);
+      
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response ok:', response.ok);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       const csvText = await response.text();
-      console.log('📄 CSV text loaded, length:', csvText.length);
-      
       const lines = csvText.split('\n');
-      console.log('📊 Total lines:', lines.length);
-      
       const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
-      console.log('📋 Headers:', headers);
       
       this.trainData = lines.slice(1).filter(line => line.trim()).map((line, index) => {
         const values = line.split(',').map(v => v.replace(/"/g, ''));
         const train = {};
-        headers.forEach((header, headerIndex) => {
-          train[header] = values[headerIndex];
+        headers.forEach((header, index) => {
+          train[header] = values[index];
         });
         
         // Convert to expected format
         return {
-          id: `R-${String(train.train_id).padStart(3, '0')}`, // Convert to R-001, R-002 format
+          id: train.train_id,
           rank: index + 1, // Add rank field
-          status: train.status === 'eligible' ? 'Available' : 'Unavailable', // Map eligible to Available
+          status: train.status === 'Available' ? 'Available' : 'Unavailable',
           location: train.stabling_bay,
           lastMaintenance: train.last_cleaned_date,
-          mileage: parseInt(train.mileage) || 0,
-          performance: parseFloat(train.final_score_ga) || 0,
-          score: parseFloat(train.final_score_ga) || 0,
-          branding_priority: parseInt(train.branding_priority) || 0,
-          assignment: train.assignment === 'service' ? 'Service' : 'Maintenance',
-          fitnessValid: train.fitness_certificate_valid === 'True',
+          mileage: parseInt(train.mileage),
+          performance: parseFloat(train.score),
+          score: parseFloat(train.score),
+          branding_priority: parseInt(train.branding_priority), // Fix field name
+          assignment: train.assignment,
+          fitnessValid: train.fitness_certificate_valid === 'Yes',
           jobCardStatus: train.job_card_status,
-          explanation: train.maintenance_reason || '',
-          stabling_bay: train.stabling_bay,
-          last_cleaned_date: train.last_cleaned_date,
+          explanation: train.explanation,
+          stabling_bay: train.stabling_bay, // Fix field name
+          last_cleaned_date: train.last_cleaned_date, // Fix field name
           // Additional ML metrics
-          mileageScore: parseFloat(train.mileage_score) || 0,
-          brandingScore: parseFloat(train.branding_score) || 0,
-          cleaningScore: parseFloat(train.cleaning_score) || 0,
-          shuntingScore: parseFloat(train.shunting_score) || 0,
-          finalScoreGA: parseFloat(train.final_score_ga) || 0,
-          totalShuntingCost: parseFloat(train.total_shunting_cost) || 0,
-          countPenalty: parseInt(train.count_penalty) || 0,
-          shuntPenalty: parseInt(train.shunt_penalty) || 0,
+          mileageScore: parseFloat(train.mileage_score),
+          brandingScore: parseFloat(train.branding_score),
+          cleaningScore: parseFloat(train.cleaning_score),
+          shuntingScore: parseFloat(train.shunting_score),
+          finalScoreGA: parseFloat(train.final_score_ga),
+          totalShuntingCost: parseFloat(train.total_shunting_cost),
+          countPenalty: parseInt(train.count_penalty),
+          shuntPenalty: parseInt(train.shunt_penalty),
           brandingShortfall: train.branding_shortfall === 'True'
         };
       });
 
       this.lastUpdate = new Date();
-      console.log('✅ Successfully loaded', this.trainData.length, 'trains');
       
       // Notify callbacks
       this.notifyCallbacks('data_loaded', this.trainData);
       
+      console.log('✅ ML Data Service: Successfully loaded', this.trainData.length, 'train records');
       return this.trainData;
     } catch (error) {
       console.error('❌ Error loading ML data:', error);
-      console.error('Error details:', error.message);
-      
-      // Return empty array as fallback instead of throwing
-      this.trainData = [];
-      this.lastUpdate = new Date();
       return [];
     }
   }

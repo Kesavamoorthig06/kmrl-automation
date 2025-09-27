@@ -1,0 +1,131 @@
+{
+  "timestamp": "2025-09-27T17:25:08.351Z",
+  "status": "PASSED",
+  "criticalFailures": 0,
+  "checks": [
+    {
+      "name": "Netlify Configuration",
+      "passed": true,
+      "files": [
+        {
+          "name": "netlify.toml",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Serverless Functions",
+      "passed": true,
+      "files": [
+        {
+          "name": "netlify/functions/get-train-data.js",
+          "exists": true
+        },
+        {
+          "name": "netlify/functions/get-analytics.js",
+          "exists": true
+        },
+        {
+          "name": "netlify/functions/chatbot.js",
+          "exists": true
+        },
+        {
+          "name": "netlify/functions/optimize-deployment.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "API Services",
+      "passed": true,
+      "files": [
+        {
+          "name": "src/services/NetlifyAPIService.js",
+          "exists": true
+        },
+        {
+          "name": "src/services/ChatbotService.js",
+          "exists": true
+        },
+        {
+          "name": "src/services/DeploymentService.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "CSV Data Files",
+      "passed": true,
+      "files": [
+        {
+          "name": "public/ml_analysis_data.csv",
+          "exists": true
+        },
+        {
+          "name": "public/train_branding_priorities.csv",
+          "exists": true
+        },
+        {
+          "name": "public/train_cleaning_status.csv",
+          "exists": true
+        },
+        {
+          "name": "public/train_fitness_certificates.csv",
+          "exists": true
+        },
+        {
+          "name": "public/train_job_cards.csv",
+          "exists": true
+        },
+        {
+          "name": "public/train_mileage_data.csv",
+          "exists": true
+        },
+        {
+          "name": "public/train_stabling_geometry.csv",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Core Components",
+      "passed": true,
+      "files": [
+        {
+          "name": "src/components/SystemStatusAnalyticsBanner.jsx",
+          "exists": true
+        },
+        {
+          "name": "src/components/SystemStatusPopup.jsx",
+          "exists": true
+        },
+        {
+          "name": "src/contexts/ThemeContext.jsx",
+          "exists": true
+        },
+        {
+          "name": "src/contexts/LanguageContext.jsx",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "Build Configuration",
+      "passed": true,
+      "files": [
+        {
+          "name": "package.json",
+          "exists": true
+        },
+        {
+          "name": "vite.config.js",
+          "exists": true
+        },
+        {
+          "name": "tailwind.config.js",
+          "exists": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "kmrl-qr-generator",
+  "version": "1.0.0",
+  "description": "QR Code generator for KMRL Employee Login System",
+  "main": "generate_qr_codes.js",
+  "scripts": {
+    "generate": "node generate_qr_codes.js",
+    "install-deps": "npm install"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.3"
+  },
+  "keywords": [
+    "qr-code",
+    "kmrl",
+    "metro",
+    "login",
+    "employee"
+  ],
+  "author": "KMRL Development Team",
+  "license": "MIT"
+}

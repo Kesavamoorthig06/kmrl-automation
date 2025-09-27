@@ -17,7 +17,7 @@ const DashboardHeader = ({
           <div className="flex items-start space-x-6">
             <img 
               src="/metro-logo.png" 
-              alt="Metro Logo" 
+              alt="Kochi Metro Logo" 
               className="h-16 w-16 object-contain mt-2"
             />
             <div>

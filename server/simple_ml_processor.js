@@ -11,12 +11,12 @@ const path = require('path');
 class SimpleMLProcessor {
     constructor() {
         this.csvFiles = {
-            'fitness_certificates': 'public/train_fitness_certificates.csv',
-            'job_cards': 'public/train_job_cards.csv',
-            'branding_priorities': 'public/train_branding_priorities.csv',
-            'mileage_data': 'public/train_mileage_data.csv',
-            'cleaning_status': 'public/train_cleaning_status.csv',
-            'stabling_geometry': 'public/train_stabling_geometry.csv'
+            'fitness_certificates': '../public/train_fitness_certificates.csv',
+            'job_cards': '../public/train_job_cards.csv',
+            'branding_priorities': '../public/train_branding_priorities.csv',
+            'mileage_data': '../public/train_mileage_data.csv',
+            'cleaning_status': '../public/train_cleaning_status.csv',
+            'stabling_geometry': '../public/train_stabling_geometry.csv'
         };
         this.data = {};
     }
@@ -323,7 +323,7 @@ class SimpleMLProcessor {
         return { results, selectedTrains, totalTrains, availableCount, selectedCount };
     }
 
-    generateOutputCSV(results, outputFile = 'public/ml_analysis_data.csv') {
+    generateOutputCSV(results, outputFile = '../public/ml_analysis_data.csv') {
         console.log(`📝 Generating output CSV: ${outputFile}`);
         
         const outputData = results.map(row => {
