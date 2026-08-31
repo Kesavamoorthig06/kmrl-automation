@@ -1,0 +1,21 @@
+{
+  "type": "branding_contract",
+  "extracted_at": "2026-02-19T15:28:44.990346",
+  "uploaded_by": "KMRL-4001",
+  "campaign_name": "Air-Max 2026",
+  "brand_name": "Nike India Pvt Ltd",
+  "wrap_id": "KMRL/PR/BR-WRAP/2026/082",
+  "start_date": "2026-03-01",
+  "end_date": "2026-08-31",
+  "daily_required_hours": 18.0,
+  "monthly_required_hours": 540.0,
+  "required_trainsets": 3,
+  "train_ids": [],
+  "advertisement_type": "exterior_wrap",
+  "placement_type": "full_body",
+  "contract_value": null,
+  "ref_number": "KMRL/PR/BR-WRAP/2026/082",
+  "interior_units": 136,
+  "target_impressions": "2,50,000",
+  "coaches_count": 9
+}

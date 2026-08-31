@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Crown, Palette, Sparkles, Wrench, Truck, UserCheck } from 'lucide-react';
 
 // Converted from provided HTML -> JSX with minimal structural changes.
 // Note: the page expects the html5-qrcode lib to be available. The component
@@ -137,6 +138,7 @@ export default function KMRLLogin() {
     console.log('Quick login for role:', role);
     const credentials = qrCredentials[role];
     if (credentials) {
+      sessionStorage.removeItem('schedulane_loaded');
       showMessage(`Quick login: ${credentials.role}. Redirecting...`, 'success');
       setTimeout(() => {
         window.location.href = credentials.redirectUrl;
@@ -189,6 +191,7 @@ export default function KMRLLogin() {
     console.log('Found credentials:', credentials);
 
     if (credentials) {
+      sessionStorage.removeItem('schedulane_loaded');
       showMessage(`QR Code detected! Redirecting to ${credentials.role}...`, 'success');
 
       // Stop scanner and close modal immediately
@@ -343,11 +346,13 @@ export default function KMRLLogin() {
         return;
       }
 
+
       const credentials = qrCredentials[workerId];
       console.log('Found credentials:', credentials);
       console.log('Available credentials:', Object.keys(qrCredentials));
       
       if (credentials && credentials.password === password) {
+        sessionStorage.removeItem('schedulane_loaded');
         showMessage(`Login successful! Welcome ${credentials.role}. Redirecting...`, 'success');
         setTimeout(() => { 
           if (credentials.redirectUrl.startsWith('/')) {
@@ -439,8 +444,55 @@ export default function KMRLLogin() {
 
     .hamburger-menu { position: absolute; top: 100%; left: 18px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 8px 0; min-width: 150px; z-index: 1000; display: none; }
     .hamburger-menu.show { display:block; }
-    .hamburger-menu-item { padding: 10px 16px; cursor: pointer; color: #333; font-size: 0.9rem; font-weight: 500; transition: background-color 0.2s ease; display:flex; align-items:center; gap:8px; }
+    .hamburger-menu-item { padding: 10px 16px; cursor: pointer; color: #333; font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease; display:flex; align-items:center; gap:8px; }
     .hamburger-menu-item:hover { background-color: #f5f5f5; }
+    
+    /* Administrator Highlighting */
+    .admin-highlight { 
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); 
+      color: white; 
+      border-radius: 8px; 
+      margin: 4px 8px; 
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .admin-highlight::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+    .admin-highlight:hover { 
+      background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%); 
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    .admin-highlight .role-name { 
+      color: white; 
+      font-weight: 700; 
+      font-size: 0.95rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    .admin-highlight .credential-text { 
+      color: rgba(255, 255, 255, 0.9); 
+      font-weight: 500;
+    }
+    .admin-highlight .quick-access-icon { 
+      font-size: 18px; 
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+    
     .hamburger-menu-divider { height: 1px; background-color: #e0e0e0; margin: 4px 0; }
     .hamburger-menu-section-title { padding: 8px 16px 4px; font-size: 0.8rem; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
     .quick-access-icon { font-size: 16px; width: 20px; text-align: center; }
@@ -512,8 +564,21 @@ export default function KMRLLogin() {
           
           <div className="hamburger-menu-section-title">Quick Access</div>
           
+          {/* Administrator - Highlighted and First */}
+          <div className="hamburger-menu-item admin-highlight" onClick={() => quickLogin('admin')}>
+            <span className="quick-access-icon">
+              <Crown size={18} className="text-yellow-600" />
+            </span>
+            <div className="credential-info">
+              <span className="role-name">Administrator</span>
+              <span className="credential-text">admin / password</span>
+            </div>
+          </div>
+          
           <div className="hamburger-menu-item" onClick={() => quickLogin('brand')}>
-            <span className="quick-access-icon">🎨</span>
+            <span className="quick-access-icon">
+              <Palette size={18} className="text-purple-600" />
+            </span>
             <div className="credential-info">
               <span className="role-name">Branding Officer</span>
               <span className="credential-text">brand / password</span>
@@ -521,7 +586,9 @@ export default function KMRLLogin() {
           </div>
           
           <div className="hamburger-menu-item" onClick={() => quickLogin('clean')}>
-            <span className="quick-access-icon">🧹</span>
+            <span className="quick-access-icon">
+              <Sparkles size={18} className="text-green-600" />
+            </span>
             <div className="credential-info">
               <span className="role-name">Cleaning Crew</span>
               <span className="credential-text">clean / password</span>
@@ -529,7 +596,9 @@ export default function KMRLLogin() {
           </div>
           
           <div className="hamburger-menu-item" onClick={() => quickLogin('tech')}>
-            <span className="quick-access-icon">🔧</span>
+            <span className="quick-access-icon">
+              <Wrench size={18} className="text-blue-600" />
+            </span>
             <div className="credential-info">
               <span className="role-name">Technical Staff</span>
               <span className="credential-text">tech / password</span>
@@ -537,7 +606,9 @@ export default function KMRLLogin() {
           </div>
           
           <div className="hamburger-menu-item" onClick={() => quickLogin('yard')}>
-            <span className="quick-access-icon">🚂</span>
+            <span className="quick-access-icon">
+              <Truck size={18} className="text-orange-600" />
+            </span>
             <div className="credential-info">
               <span className="role-name">Yard Operations</span>
               <span className="credential-text">yard / password</span>
@@ -545,18 +616,12 @@ export default function KMRLLogin() {
           </div>
           
           <div className="hamburger-menu-item" onClick={() => quickLogin('operation')}>
-            <span className="quick-access-icon">👨‍💼</span>
+            <span className="quick-access-icon">
+              <UserCheck size={18} className="text-indigo-600" />
+            </span>
             <div className="credential-info">
               <span className="role-name">Operation Staff</span>
               <span className="credential-text">operation / password</span>
-            </div>
-          </div>
-          
-          <div className="hamburger-menu-item" onClick={() => quickLogin('admin')}>
-            <span className="quick-access-icon">👑</span>
-            <div className="credential-info">
-              <span className="role-name">Administrator</span>
-              <span className="credential-text">admin / password</span>
             </div>
           </div>
         </div>
@@ -581,7 +646,7 @@ export default function KMRLLogin() {
               id="worker-id" 
               name="worker-id" 
               required 
-              placeholder="Enter your Worker ID" 
+              placeholder="Enter your Worker ID"
               type="text" 
               defaultValue=""
             />
@@ -613,8 +678,6 @@ export default function KMRLLogin() {
           <button type="submit" id="submitBtn">Log-in</button>
         </form>
       </main>
-
-      <div className="footer" aria-hidden="true">© 2024 Kochi Metro Rail Limited. All rights reserved.</div>
 
       <div id="qrModal" className="qr-modal" role="dialog" aria-modal="true" aria-hidden="true" ref={qrModalRef} onClick={(e) => { if (e.target === qrModalRef.current) closeQRScanner(); }}>
         <div className="qr-modal-content">

@@ -1,0 +1,31 @@
+{"ts": "2026-02-19T06:39:57.560668+00:00", "event": "auth_success", "employee_id": "KMRL-1001", "name": "Rajesh Kumar", "role": "MAINTENANCE", "sender": "whatsapp:+919999999999"}
+{"ts": "2026-02-19T06:40:06.993609+00:00", "event": "train_id_set", "employee_id": "KMRL-1001", "train_id": "KMRL-1001", "sender": "whatsapp:+919999999999"}
+{"ts": "2026-02-19T06:41:29.864429+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+910000000001"}
+{"ts": "2026-02-19T06:45:28.009220+00:00", "event": "auth_success", "employee_id": "KMRL-1001", "name": "Rajesh Kumar", "role": "MAINTENANCE", "sender": "whatsapp:+910000000002"}
+{"ts": "2026-02-19T06:45:45.928270+00:00", "event": "train_id_set", "employee_id": "KMRL-1001", "train_id": "T-001", "sender": "whatsapp:+910000000002"}
+{"ts": "2026-02-19T06:45:56.783449+00:00", "event": "auth_fail", "employee_id": "KMRL-9999", "sender": "whatsapp:+910000000003"}
+{"ts": "2026-02-19T06:46:08.080133+00:00", "event": "auth_fail", "employee_id": "KMRL-9999", "sender": "whatsapp:+910000000003"}
+{"ts": "2026-02-19T06:50:06.909897+00:00", "event": "auth_success", "employee_id": "KMRL-1002", "name": "Anitha Nair", "role": "MAINTENANCE", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T06:50:28.832344+00:00", "event": "auth_success", "employee_id": "KMRL-1003", "name": "Suresh Menon", "role": "MAINTENANCE", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T06:50:42.381775+00:00", "event": "auth_success", "employee_id": "EMP001", "name": "Test Maintenance", "role": "MAINTENANCE", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T06:51:12.176967+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T06:51:42.142039+00:00", "event": "branding_upload_start", "employee_id": "KMRL-4001", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T06:51:44.853127+00:00", "event": "branding_upload_done", "employee_id": "KMRL-4001", "campaign": null, "brand": null, "fields_extracted": 2, "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T07:00:25.039963+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T07:00:53.940378+00:00", "event": "branding_upload_start", "employee_id": "KMRL-4001", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T07:00:55.669403+00:00", "event": "branding_upload_done", "employee_id": "KMRL-4001", "campaign": "Air-Max 2026", "brand": "Nike India Pvt Ltd", "fields_extracted": 14, "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T07:02:59.262525+00:00", "event": "auth_success", "employee_id": "KMRL-4002", "name": "Vishnu Prasad", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T07:03:26.648397+00:00", "event": "branding_upload_start", "employee_id": "KMRL-4002", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T07:03:28.293440+00:00", "event": "branding_upload_done", "employee_id": "KMRL-4002", "campaign": "Air-Max 2026", "brand": "Nike India Pvt Ltd", "fields_extracted": 14, "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T09:18:48.801116+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+910000000001"}
+{"ts": "2026-02-19T09:19:51.769908+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+910000000002"}
+{"ts": "2026-02-19T09:20:00.549745+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+910000000002"}
+{"ts": "2026-02-19T09:22:15.021176+00:00", "event": "logout", "employee_id": "KMRL-4001", "sender": "whatsapp:+910000000002"}
+{"ts": "2026-02-19T09:29:55.476779+00:00", "event": "auth_success", "employee_id": "KMRL-1001", "name": "Rajesh Kumar", "role": "MAINTENANCE", "sender": "whatsapp:+910000000003"}
+{"ts": "2026-02-19T09:30:08.123745+00:00", "event": "auth_success", "employee_id": "KMRL-1001", "name": "Rajesh Kumar", "role": "MAINTENANCE", "sender": "whatsapp:+910000000003"}
+{"ts": "2026-02-19T09:35:50.115960+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+916383138546"}
+{"ts": "2026-02-19T09:53:16.700396+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+919043018725"}
+{"ts": "2026-02-19T09:54:51.238732+00:00", "event": "branding_upload_start", "employee_id": "KMRL-4001", "role": "MARKETING", "sender": "whatsapp:+919043018725"}
+{"ts": "2026-02-19T09:58:20.477887+00:00", "event": "auth_success", "employee_id": "KMRL-4001", "name": "Meera Krishnan", "role": "MARKETING", "sender": "whatsapp:+919043018725"}
+{"ts": "2026-02-19T09:58:41.813245+00:00", "event": "branding_upload_start", "employee_id": "KMRL-4001", "role": "MARKETING", "sender": "whatsapp:+919043018725"}
+{"ts": "2026-02-19T09:59:11.525616+00:00", "event": "branding_confirmed", "employee_id": "KMRL-4001", "campaign": "Air-Max 2026", "brand": "Nike India Pvt Ltd", "fields_extracted": 14, "sender": "whatsapp:+919043018725"}

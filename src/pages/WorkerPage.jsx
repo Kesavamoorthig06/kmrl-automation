@@ -2,9 +2,9 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import OperationStaff from '../components/workers/OperationStaff';
 import Technical from '../components/workers/Technical';
-import YardOperations from '../components/workers/YardOperations';
+import Yard from '../components/workers/Yard';
 import BrandingOfficer from '../components/workers/BrandingOfficer';
-import CleaningCrew from '../components/workers/CleaningCrew';
+import Cleaning from '../components/workers/Cleaning';
 
 function WorkerPage() {
   const { workerType } = useParams();
@@ -13,10 +13,10 @@ function WorkerPage() {
   const workerComponentMap = {
     'operation-staff': OperationStaff,
     'technical': Technical,
-    'yard': YardOperations,
-    'ops-interface': OperationStaff, // Using OperationStaff for ops-interface
+    'yard': Yard,
+    'ops-interface': OperationStaff,
     'branding-officer': BrandingOfficer,
-    'cleaning': CleaningCrew
+    'cleaning': Cleaning
   };
 
   const WorkerComponent = workerComponentMap[workerType];

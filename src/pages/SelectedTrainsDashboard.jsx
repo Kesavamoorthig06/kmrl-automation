@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Badge } from "../components/ui/Badge.jsx";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/Alert.jsx";
 import { CheckCircle, BarChart3, Target, RefreshCw, MapPin, Train } from "lucide-react";
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/layout/Navbar.jsx";
 import MLDataService from "../services/MLDataService.js";
 import { useTranslation } from "../hooks/useTranslation.js";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
@@ -453,15 +453,6 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center">
-                <img 
-                  src="/metro-train.png" 
-                  alt="Metro Train" 
-                  className="h-20 w-auto object-contain filter brightness-0 invert opacity-90 hover:opacity-100 transition-opacity duration-300"
-                />
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -540,11 +531,11 @@ export default function SelectedTrainsDashboard({ selectedTrainIds, onBack, onDe
         <Alert className="mb-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-slate-800 dark:to-slate-700 border-2 border-green-300 dark:border-slate-500 rounded-lg shadow-lg dark:shadow-xl">
           <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
           <div className="flex flex-col">
-            <AlertTitle className="text-green-800 dark:text-gray-200 font-bold text-lg mb-2" style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-              {t('selectionConfirmed')}
+            <AlertTitle className="text-green-800 dark:!text-white font-bold text-lg mb-2" style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: 'var(--tw-text-green-800)'}}>
+              <span className="dark:!text-white dark:!opacity-100">{t('selectionConfirmed')}</span>
             </AlertTitle>
-            <AlertDescription className="text-green-700 dark:text-gray-400 text-sm font-normal leading-relaxed" style={{fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
-              {selectedTrains.length} trains have been selected for deployment. Review the details below and proceed with deployment.
+            <AlertDescription className="text-green-700 dark:!text-white text-sm font-normal leading-relaxed" style={{fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'}}>
+              <span className="dark:!text-white dark:!opacity-100">{selectedTrains.length} trains have been selected for deployment. Review the details below and proceed with deployment.</span>
             </AlertDescription>
           </div>
         </Alert>

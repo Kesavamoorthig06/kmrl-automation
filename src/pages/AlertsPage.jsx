@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, CheckCircle, Info, Zap, Activity, Clock, Filter } from 'lucide-react';
-import Navbar from '../components/Navbar.jsx';
+import Navbar from '../components/layout/Navbar.jsx';
 import RealTimeDataService from '../services/RealTimeDataService.js';
 import { useTranslation } from '../hooks/useTranslation.js';
 import { useLanguage } from '../contexts/LanguageContext.jsx';

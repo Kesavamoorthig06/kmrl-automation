@@ -1,0 +1,58 @@
+version: '3.8'
+
+# KMRL WhatsApp Bot — Docker Compose for local development & AWS ECS
+# Production: use ECS task definitions or docker-compose on EC2.
+
+services:
+  # ── PostgreSQL (RDS in production) ──────────────────────────────
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: kmrl_bot
+      POSTGRES_USER: kmrl
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-devpassword}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kmrl"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── WhatsApp Bot (FastAPI) ──────────────────────────────────────
+  bot:
+    build:
+      context: ..
+      dockerfile: whatsapp/Dockerfile
+    ports:
+      - "8300:8300"
+    environment:
+      # Override DB URLs for container networking
+      DATABASE_URL: postgresql://kmrl:${DB_PASSWORD:-devpassword}@db:5432/kmrl_bot
+      DATABASE_URL_ASYNC: postgresql+asyncpg://kmrl:${DB_PASSWORD:-devpassword}@db:5432/kmrl_bot
+      # Twilio (from .env or override)
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_WHATSAPP_FROM: ${TWILIO_WHATSAPP_FROM:-whatsapp:+14155238886}
+      # Cognito
+      COGNITO_DOMAIN: ${COGNITO_DOMAIN}
+      COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
+      COGNITO_CLIENT_SECRET: ${COGNITO_CLIENT_SECRET:-}
+      COGNITO_REDIRECT_URI: ${COGNITO_REDIRECT_URI:-http://localhost:8300/auth/callback}
+      COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
+      COGNITO_JWKS_URL: ${COGNITO_JWKS_URL}
+      SESSION_TIMEOUT_MINUTES: ${SESSION_TIMEOUT_MINUTES:-20}
+      # AWS
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-kmrl-document-store}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

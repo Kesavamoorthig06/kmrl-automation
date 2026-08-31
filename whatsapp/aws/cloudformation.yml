@@ -1,0 +1,396 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  KMRL WhatsApp Bot — AWS CloudFormation template
+  Deploys: Cognito User Pool, API Gateway, RDS PostgreSQL, S3 Bucket, ECS Service
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues: [production, staging]
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC for the deployment
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet::Id
+    Description: Private subnet for RDS and ECS
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet::Id
+    Description: Second private subnet (RDS multi-AZ)
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet::Id
+    Description: Public subnet for ALB
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet::Id
+    Description: Second public subnet for ALB
+
+  DBPassword:
+    Type: String
+    NoEcho: true
+    MinLength: 12
+    Description: RDS master password
+
+  TwilioAccountSid:
+    Type: String
+    NoEcho: true
+
+  TwilioAuthToken:
+    Type: String
+    NoEcho: true
+
+  DockerImage:
+    Type: String
+    Description: ECR image URI for the bot
+
+Resources:
+  # ═════════════════════════════════════════════════════════════════
+  # COGNITO USER POOL (OAuth Identity Provider)
+  # ═════════════════════════════════════════════════════════════════
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub 'kmrl-bot-${Environment}'
+      AutoVerifiedAttributes: [email]
+      UsernameAttributes: [email]
+      Schema:
+        - Name: employee_id
+          AttributeDataType: String
+          Mutable: true
+          Required: false
+        - Name: role
+          AttributeDataType: String
+          Mutable: true
+          Required: false
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  CognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      Domain: !Sub 'kmrl-bot-${Environment}'
+
+  CognitoAppClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: !Sub 'kmrl-whatsapp-${Environment}'
+      GenerateSecret: false
+      AllowedOAuthFlows: [code]
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthScopes: [openid, profile, email]
+      CallbackURLs:
+        - !Sub 'https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/auth/callback'
+      SupportedIdentityProviders: [COGNITO]
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+      AccessTokenValidity: 20
+      IdTokenValidity: 20
+      RefreshTokenValidity: 7
+
+  # ═════════════════════════════════════════════════════════════════
+  # S3 BUCKET (Document Storage)
+  # ═════════════════════════════════════════════════════════════════
+  DocumentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'kmrl-document-store-${Environment}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: ArchiveOldDocuments
+            Status: Enabled
+            Transitions:
+              - StorageClass: GLACIER
+                TransitionInDays: 90
+
+  # ═════════════════════════════════════════════════════════════════
+  # RDS POSTGRESQL (Private Subnet, No Public Access)
+  # ═════════════════════════════════════════════════════════════════
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Private subnets for KMRL bot DB
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: RDS security group - private access only
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref ECSSecurityGroup
+
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub 'kmrl-bot-${Environment}'
+      Engine: postgres
+      EngineVersion: '16.1'
+      DBInstanceClass: db.t3.micro
+      AllocatedStorage: 20
+      MasterUsername: kmrl
+      MasterUserPassword: !Ref DBPassword
+      DBName: kmrl_bot
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DBSecurityGroup
+      PubliclyAccessible: false
+      StorageEncrypted: true
+      BackupRetentionPeriod: 7
+      MultiAZ: false
+      DeletionProtection: true
+
+  # ═════════════════════════════════════════════════════════════════
+  # ECS (FastAPI Deployment)
+  # ═════════════════════════════════════════════════════════════════
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub 'kmrl-bot-${Environment}'
+
+  ECSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ECS tasks security group
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8300
+          ToPort: 8300
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+
+  ECSTaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:DeleteObject
+                Resource:
+                  - !GetAtt DocumentBucket.Arn
+                  - !Sub '${DocumentBucket.Arn}/*'
+
+  ECSExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub 'kmrl-bot-${Environment}'
+      Cpu: '256'
+      Memory: '512'
+      NetworkMode: awsvpc
+      RequiresCompatibilities: [FARGATE]
+      TaskRoleArn: !Ref ECSTaskRole
+      ExecutionRoleArn: !Ref ECSExecutionRole
+      ContainerDefinitions:
+        - Name: bot
+          Image: !Ref DockerImage
+          PortMappings:
+            - ContainerPort: 8300
+          Environment:
+            - Name: DATABASE_URL
+              Value: !Sub 'postgresql://kmrl:${DBPassword}@${RDSInstance.Endpoint.Address}:5432/kmrl_bot'
+            - Name: DATABASE_URL_ASYNC
+              Value: !Sub 'postgresql+asyncpg://kmrl:${DBPassword}@${RDSInstance.Endpoint.Address}:5432/kmrl_bot'
+            - Name: COGNITO_DOMAIN
+              Value: !Sub 'kmrl-bot-${Environment}.auth.${AWS::Region}.amazoncognito.com'
+            - Name: COGNITO_CLIENT_ID
+              Value: !Ref CognitoAppClient
+            - Name: COGNITO_USER_POOL_ID
+              Value: !Ref CognitoUserPool
+            - Name: S3_BUCKET_NAME
+              Value: !Ref DocumentBucket
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
+            - Name: TWILIO_ACCOUNT_SID
+              Value: !Ref TwilioAccountSid
+            - Name: TWILIO_AUTH_TOKEN
+              Value: !Ref TwilioAuthToken
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Sub '/ecs/kmrl-bot-${Environment}'
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: bot
+          HealthCheck:
+            Command: ["CMD-SHELL", "python -c \"import httpx; r=httpx.get('http://localhost:8300/health'); exit(0 if r.status_code==200 else 1)\""]
+            Interval: 30
+            Timeout: 5
+            Retries: 3
+            StartPeriod: 10
+
+  ECSService:
+    Type: AWS::ECS::Service
+    DependsOn: ALBListener
+    Properties:
+      Cluster: !Ref ECSCluster
+      TaskDefinition: !Ref ECSTaskDefinition
+      DesiredCount: 1
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets:
+            - !Ref PrivateSubnet1
+          SecurityGroups:
+            - !Ref ECSSecurityGroup
+      LoadBalancers:
+        - ContainerName: bot
+          ContainerPort: 8300
+          TargetGroupArn: !Ref ALBTargetGroup
+
+  # ═════════════════════════════════════════════════════════════════
+  # ALB + API GATEWAY (Public Endpoint, Twilio IP Filtering)
+  # ═════════════════════════════════════════════════════════════════
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ALB security group - Twilio IPs and HTTPS
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        # Twilio IP ranges
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 54.172.60.0/23
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 54.244.51.0/24
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 34.203.250.0/23
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 54.171.127.192/26
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 52.215.127.0/24
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 35.156.191.128/25
+        # Allow all HTTPS for auth callback (user browsers)
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  ALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub 'kmrl-bot-${Environment}'
+      Subnets:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8300
+      Protocol: HTTP
+      VpcId: !Ref VpcId
+      TargetType: ip
+      HealthCheckPath: /health
+      HealthCheckIntervalSeconds: 30
+
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref ALB
+      Port: 443
+      Protocol: HTTPS
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ALBTargetGroup
+
+  ApiGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub 'kmrl-bot-api-${Environment}'
+      ProtocolType: HTTP
+
+  # ═════════════════════════════════════════════════════════════════
+  # CLOUDWATCH LOG GROUP
+  # ═════════════════════════════════════════════════════════════════
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/ecs/kmrl-bot-${Environment}'
+      RetentionInDays: 90
+
+Outputs:
+  CognitoUserPoolId:
+    Value: !Ref CognitoUserPool
+  CognitoClientId:
+    Value: !Ref CognitoAppClient
+  CognitoDomain:
+    Value: !Sub 'kmrl-bot-${Environment}.auth.${AWS::Region}.amazoncognito.com'
+  S3BucketName:
+    Value: !Ref DocumentBucket
+  RDSEndpoint:
+    Value: !GetAtt RDSInstance.Endpoint.Address
+  ALBDnsName:
+    Value: !GetAtt ALB.DNSName
+  WebhookUrl:
+    Value: !Sub 'https://${ALB.DNSName}/webhook/whatsapp'

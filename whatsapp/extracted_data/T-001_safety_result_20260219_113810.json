@@ -1,0 +1,125 @@
+{
+  "success": true,
+  "final_score": 0.0,
+  "critical_fail": false,
+  "domain_scores": {
+    "safety": 0.0
+  },
+  "parameters": [
+    {
+      "param_id": "SAF-001",
+      "name": "Fire Detection Response Time",
+      "domain": "safety",
+      "value": null,
+      "unit": "s",
+      "pass_condition": "value <= 30",
+      "passed": null,
+      "criticality": "critical",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-002",
+      "name": "Emergency Brake Distance",
+      "domain": "safety",
+      "value": null,
+      "unit": "m",
+      "pass_condition": "value <= 150",
+      "passed": null,
+      "criticality": "critical",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-003",
+      "name": "Door Interlock Holding Force",
+      "domain": "safety",
+      "value": null,
+      "unit": "N",
+      "pass_condition": "value >= 500",
+      "passed": null,
+      "criticality": "critical",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-004",
+      "name": "Emergency Lighting Duration",
+      "domain": "safety",
+      "value": null,
+      "unit": "min",
+      "pass_condition": "value >= 90",
+      "passed": null,
+      "criticality": "high",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-005",
+      "name": "Smoke Obscuration",
+      "domain": "safety",
+      "value": null,
+      "unit": "pct",
+      "pass_condition": "value <= 10",
+      "passed": null,
+      "criticality": "high",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-006",
+      "name": "Deadman Device Response Time",
+      "domain": "safety",
+      "value": null,
+      "unit": "s",
+      "pass_condition": "value <= 3",
+      "passed": null,
+      "criticality": "critical",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-007",
+      "name": "Crashworthiness Longitudinal Force",
+      "domain": "safety",
+      "value": null,
+      "unit": "kN",
+      "pass_condition": "value >= 1500",
+      "passed": null,
+      "criticality": "critical",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-008",
+      "name": "Earthing Resistance",
+      "domain": "safety",
+      "value": null,
+      "unit": "Ohm",
+      "pass_condition": "value <= 1",
+      "passed": null,
+      "criticality": "high",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-009",
+      "name": "Emergency Egress Door Width",
+      "domain": "safety",
+      "value": null,
+      "unit": "mm",
+      "pass_condition": "value >= 650",
+      "passed": null,
+      "criticality": "high",
+      "note": "not found in document"
+    },
+    {
+      "param_id": "SAF-010",
+      "name": "PSD-Train Door Alignment Tolerance",
+      "domain": "safety",
+      "value": null,
+      "unit": "mm",
+      "pass_condition": "value <= 50",
+      "passed": null,
+      "criticality": "medium",
+      "note": "not found in document"
+    }
+  ],
+  "extracted_count": 0,
+  "total_registry_count": 10,
+  "train_id": "T-001",
+  "domain": "safety",
+  "text_length": 1516
+}

@@ -1,11 +1,12 @@
 // ML Data Service for KMRL Train Management System
 // Loads and processes ML-generated train optimization data
 
-import NetlifyAPIService from './NetlifyAPIService';
+import APIService from './api';
 
 class MLDataService {
   constructor() {
     this.trainData = null;
+    this.dashboardData = null;
     this.lastUpdate = null;
     this.callbacks = new Map();
   }
@@ -15,109 +16,228 @@ class MLDataService {
     try {
       console.log('🔄 Loading ML data from API...');
       
-      // Use the new Netlify API service
+      // Try to load directly from CSV first as fallback
       try {
-        const apiData = await NetlifyAPIService.getTrainData();
-        if (apiData.success && apiData.data && apiData.data.trains) {
-          this.trainData = apiData.data.trains;
+        const csvData = await this.loadCSVDirectly();
+        if (csvData && csvData.length > 0) {
+          console.log('✅ Loaded data directly from CSV:', csvData.length, 'records');
+          this.trainData = csvData;
+          this.dashboardData = this.generateAnalyticsFromCSV(csvData);
           this.lastUpdate = new Date();
-          console.log('✅ Loaded ML data from API:', this.trainData.length, 'trains');
           this.notifyCallbacks('data_loaded', this.trainData);
           return this.trainData;
         }
-      } catch (apiError) {
-        console.log('⚠️ API not available, falling back to local data...');
+      } catch (csvError) {
+        console.warn('⚠️ Could not load CSV directly:', csvError.message);
       }
-
-      // Fallback to train-data API
-      try {
-        const apiResponse = await fetch('/.netlify/functions/train-data?file=ml_analysis');
-        if (apiResponse.ok) {
-          const apiData = await apiResponse.json();
-          if (apiData.success && apiData.data) {
-            this.trainData = apiData.data;
-            this.lastUpdate = new Date();
-            console.log('✅ Loaded ML data from train-data API:', this.trainData.length, 'trains');
-            this.notifyCallbacks('data_loaded', this.trainData);
-            return this.trainData;
-          }
+      
+      // Try API approach
+      const response = await APIService.getDashboardData();
+      
+      if (response.success) {
+        this.dashboardData = response.analytics;
+        
+        // Extract train data from ML optimization if available
+        if (response.mlOptimization && response.mlOptimization.results) {
+          this.trainData = response.mlOptimization.results;
+        } else {
+          // Fallback: create train data from analytics
+          this.trainData = this.generateTrainDataFromAnalytics(response.analytics);
         }
-      } catch (apiError) {
-        console.log('⚠️ Train-data API not available, falling back to CSV...');
+        
+        this.lastUpdate = new Date();
+        
+        // Notify callbacks
+        this.notifyCallbacks('data_loaded', this.trainData);
+        
+        console.log('✅ ML Data Service: Successfully loaded', this.trainData.length, 'train records');
+        return this.trainData;
+      } else {
+        throw new Error('Failed to load dashboard data');
       }
+    } catch (error) {
+      console.error('❌ Error loading ML data:', error);
       
-      // Fallback to CSV if API is not available
-      console.log('📡 Attempting to load CSV directly...');
-      const response = await fetch(`/ml_analysis_data.csv?t=${Date.now()}`);
+      // Fallback to empty data
+      this.trainData = [];
+      this.dashboardData = null;
+      this.lastUpdate = new Date();
+      this.notifyCallbacks('data_loaded', this.trainData);
       
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response ok:', response.ok);
+      return this.trainData;
+    }
+  }
+
+  // Load CSV data directly from public folder
+  async loadCSVDirectly() {
+    try {
+      console.log('📄 Attempting to load ml_analysis_data.csv directly...');
+      const response = await fetch('/ml_analysis_data.csv');
       
       if (!response.ok) {
-        console.log('⚠️ CSV not available, using fallback data...');
-        // Use fallback data if CSV is not available
-        this.trainData = this.getFallbackData();
-        this.lastUpdate = new Date();
-        this.notifyCallbacks('data_loaded', this.trainData);
-        return this.trainData;
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const csvText = await response.text();
-      const lines = csvText.split('\n');
-      const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+      const parsedData = this.parseCSV(csvText);
       
-      this.trainData = lines.slice(1).filter(line => line.trim()).map((line, index) => {
-        const values = line.split(',').map(v => v.replace(/"/g, ''));
-        const train = {};
-        headers.forEach((header, index) => {
-          train[header] = values[index];
-        });
-        
-        // Convert to expected format
-        return {
-          id: train.train_id,
-          rank: index + 1, // Add rank field
-          status: train.status === 'Available' ? 'Available' : 'Unavailable',
-          location: train.stabling_bay,
-          lastMaintenance: train.last_cleaned_date,
-          mileage: parseInt(train.mileage),
-          performance: parseFloat(train.score),
-          score: parseFloat(train.score),
-          branding_priority: parseInt(train.branding_priority), // Fix field name
-          assignment: train.assignment,
-          fitnessValid: train.fitness_certificate_valid === 'Yes',
-          jobCardStatus: train.job_card_status,
-          explanation: train.explanation,
-          stabling_bay: train.stabling_bay, // Fix field name
-          last_cleaned_date: train.last_cleaned_date, // Fix field name
-          // Additional ML metrics
-          mileageScore: parseFloat(train.mileage_score),
-          brandingScore: parseFloat(train.branding_score),
-          cleaningScore: parseFloat(train.cleaning_score),
-          shuntingScore: parseFloat(train.shunting_score),
-          finalScoreGA: parseFloat(train.final_score_ga),
-          totalShuntingCost: parseFloat(train.total_shunting_cost),
-          countPenalty: parseInt(train.count_penalty),
-          shuntPenalty: parseInt(train.shunt_penalty),
-          brandingShortfall: train.branding_shortfall === 'True'
-        };
-      });
+      // Convert CSV data to train objects
+      const trainData = parsedData.map(row => ({
+        id: row.train_id,
+        train_id: row.train_id,
+        status: row.status === 'Available' ? 'Available' : 'Unavailable',
+        score: Math.round(parseFloat(row.score || 0) * 100),
+        composite_score: parseFloat(row.score || 0),
+        stabling_bay: row.stabling_bay,
+        branding_priority: parseInt(row.branding_priority || 0),
+        mileage: parseInt(row.mileage || 0),
+        last_cleaned_date: row.last_cleaned_date,
+        assignment: row.assignment,
+        fitness_certificate_valid: row.fitness_certificate_valid === 'Yes',
+        job_card_status: row.job_card_status,
+        explanation: row.explanation || 'No explanation available',
+        deployment_ready: row.deployment_ready === 'Yes',
+        bay_type: row.bay_type || 'standard',
+        operational_efficiency: parseFloat(row.operational_efficiency || 95),
+        individual_scores: {
+          fitness: parseFloat(row.fitness_certificate_valid === 'Yes' ? 0.9 : 0.5),
+          job_card: parseFloat(row.job_card_status === 'Clear' ? 0.9 : 0.5),
+          branding: parseFloat(row.branding_score || 0),
+          mileage: parseFloat(row.mileage_score || 0),
+          cleaning: parseFloat(row.cleaning_score || 0),
+          stabling: parseFloat(row.shunting_score || 0)
+        }
+      }));
 
-      this.lastUpdate = new Date();
-      
-      // Notify callbacks
-      this.notifyCallbacks('data_loaded', this.trainData);
-      
-      console.log('✅ ML Data Service: Successfully loaded', this.trainData.length, 'train records');
-      return this.trainData;
+      console.log('✅ Successfully parsed CSV data:', trainData.length, 'records');
+      return trainData;
     } catch (error) {
-      console.error('❌ Error loading ML data:', error);
-      console.log('🔄 Using fallback data due to error...');
-      this.trainData = this.getFallbackData();
-      this.lastUpdate = new Date();
-      this.notifyCallbacks('data_loaded', this.trainData);
-      return this.trainData;
+      console.error('❌ Error loading CSV directly:', error);
+      throw error;
     }
+  }
+
+  // Parse CSV text into array of objects
+  parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+    
+    const data = [];
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',');
+      const row = {};
+      
+      headers.forEach((header, index) => {
+        let value = values[index] || '';
+        // Remove quotes
+        value = value.replace(/^"/, '').replace(/"$/, '');
+        row[header] = value.trim();
+      });
+      
+      data.push(row);
+    }
+    
+    return data;
+  }
+
+  // Generate analytics from CSV data
+  generateAnalyticsFromCSV(trainData) {
+    const totalTrains = trainData.length;
+    const availableTrains = trainData.filter(t => t.status === 'Available').length;
+    const maintenanceTrains = totalTrains - availableTrains;
+
+    const avgScore = trainData.reduce((sum, train) => sum + (train.composite_score || 0), 0) / totalTrains;
+    const totalMileage = trainData.reduce((sum, train) => sum + (train.mileage || 0), 0);
+
+    return {
+      summary: {
+        totalTrains,
+        operational: availableTrains,
+        maintenance: maintenanceTrains,
+        outOfService: 0,
+        totalMileage: Math.round(totalMileage),
+        avgEfficiency: Math.round(avgScore * 100),
+        operationalPercentage: Math.round((availableTrains / totalTrains) * 100)
+      },
+      performance: {
+        cleaning: Math.round(avgScore * 85),
+        branding: Math.round(avgScore * 78),
+        operational: Math.round(avgScore * 88),
+        performance: Math.round(avgScore * 82),
+        overall: Math.round(avgScore * 83)
+      },
+      alerts: this.generateAlertsFromCSV(trainData)
+    };
+  }
+
+  // Generate alerts from CSV data
+  generateAlertsFromCSV(trainData) {
+    const alerts = [];
+    
+    trainData.forEach(train => {
+      if (train.status !== 'Available') {
+        alerts.push({
+          type: 'critical',
+          trainId: train.id,
+          message: train.explanation || 'Train unavailable',
+          timestamp: new Date()
+        });
+      } else if (train.composite_score < 0.8) {
+        alerts.push({
+          type: 'warning',
+          trainId: train.id,
+          message: `Low performance score: ${Math.round(train.composite_score * 100)}%`,
+          timestamp: new Date()
+        });
+      }
+    });
+
+    return alerts;
+  }
+
+  // Generate train data from analytics when ML optimization is not available
+  generateTrainDataFromAnalytics(analytics) {
+    if (!analytics || !analytics.summary) return [];
+
+    const trains = [];
+    const { totalTrains, operational, maintenance, outOfService } = analytics.summary;
+
+    // Generate sample train data based on summary
+    for (let i = 1; i <= totalTrains; i++) {
+      const trainId = `KMRL-${String(i).padStart(3, '0')}`;
+      let status = 'Available';
+      let score = Math.random() * 0.3 + 0.7; // 70-100%
+
+      // Distribute trains according to summary
+      if (i <= maintenance) {
+        status = 'Maintenance';
+        score = Math.random() * 0.4 + 0.3; // 30-70%
+      } else if (i <= maintenance + outOfService) {
+        status = 'Unavailable';
+        score = Math.random() * 0.3; // 0-30%
+      }
+
+      trains.push({
+        train_id: trainId,
+        id: trainId,
+        composite_score: score,
+        overall_status: status,
+        score: Math.round(score * 100),
+        status: status,
+        explanation: status === 'Available' ? 'All systems optimal' : 
+                    status === 'Maintenance' ? 'Maintenance required' : 'Out of service',
+        individual_scores: {
+          fitness: score + (Math.random() * 0.2 - 0.1),
+          job_card: score + (Math.random() * 0.2 - 0.1),
+          branding: score + (Math.random() * 0.2 - 0.1),
+          mileage: score + (Math.random() * 0.2 - 0.1),
+          cleaning: score + (Math.random() * 0.2 - 0.1),
+          stabling: score + (Math.random() * 0.2 - 0.1)
+        }
+      });
+    }
+
+    return trains;
   }
 
   // Get all train data
@@ -154,78 +274,35 @@ class MLDataService {
 
   // Get dashboard summary
   getDashboardSummary() {
-    if (!this.trainData) {
-      return {
-        totalTrains: 0,
-        availableTrains: 0,
-        maintenanceTrains: 0,
-        avgPerformance: 0,
-        topPerformer: null,
-        lastUpdate: null
-      };
-    }
-
-    const available = this.getAvailableTrains();
-    const maintenance = this.getMaintenanceTrains();
-    const avgPerformance = available.length > 0 
-      ? available.reduce((sum, train) => sum + train.score, 0) / available.length 
-      : 0;
-    const topPerformer = available.length > 0 
-      ? available.reduce((top, train) => train.score > top.score ? train : top)
-      : null;
-
-    return {
-      totalTrains: this.trainData.length,
-      availableTrains: available.length,
-      maintenanceTrains: maintenance.length,
-      avgPerformance: parseFloat(avgPerformance.toFixed(2)),
-      topPerformer: topPerformer,
-      lastUpdate: this.lastUpdate
+    return this.dashboardData ? this.dashboardData.summary : {
+      totalTrains: 0,
+      operational: 0,
+      maintenance: 0,
+      outOfService: 0,
+      totalMileage: 0,
+      avgEfficiency: 0,
+      operationalPercentage: 0
     };
   }
 
   // Get performance metrics
   getPerformanceMetrics() {
-    if (!this.trainData) return null;
-
-    const available = this.getAvailableTrains();
-    if (available.length === 0) return null;
-
-    const metrics = {
-      avgScore: 0,
-      maxScore: 0,
-      minScore: 0,
-      scoreDistribution: {
-        excellent: 0, // > 90
-        good: 0,      // 80-90
-        fair: 0,      // 70-80
-        poor: 0       // < 70
-      },
-      avgMileage: 0,
-      avgBrandingPriority: 0
+    return this.dashboardData ? this.dashboardData.performance : {
+      cleaning: 0,
+      branding: 0,
+      operational: 0,
+      performance: 0,
+      overall: 0
     };
-
-    const scores = available.map(train => train.score);
-    metrics.avgScore = parseFloat((scores.reduce((sum, score) => sum + score, 0) / scores.length).toFixed(2));
-    metrics.maxScore = Math.max(...scores);
-    metrics.minScore = Math.min(...scores);
-
-    // Score distribution
-    available.forEach(train => {
-      if (train.score >= 90) metrics.scoreDistribution.excellent++;
-      else if (train.score >= 80) metrics.scoreDistribution.good++;
-      else if (train.score >= 70) metrics.scoreDistribution.fair++;
-      else metrics.scoreDistribution.poor++;
-    });
-
-    metrics.avgMileage = Math.round(available.reduce((sum, train) => sum + train.mileage, 0) / available.length);
-    metrics.avgBrandingPriority = parseFloat((available.reduce((sum, train) => sum + train.brandingPriority, 0) / available.length).toFixed(1));
-
-    return metrics;
   }
 
   // Get alerts based on ML data
   getAlerts() {
+    // Return alerts from dashboard data if available, otherwise generate from train data
+    if (this.dashboardData && this.dashboardData.alerts) {
+      return this.dashboardData.alerts;
+    }
+
     if (!this.trainData) return [];
 
     const alerts = [];
@@ -235,30 +312,30 @@ class MLDataService {
     maintenanceTrains.forEach(train => {
       alerts.push({
         type: 'critical',
-        trainId: train.id,
+        trainId: train.id || train.train_id,
         message: train.explanation || 'Train requires maintenance',
         timestamp: this.lastUpdate
       });
     });
 
     // Warning alerts for low-performing available trains
-    const lowPerformingTrains = this.getAvailableTrains().filter(train => train.score < 80);
+    const lowPerformingTrains = this.getAvailableTrains().filter(train => (train.score || train.composite_score * 100) < 80);
     if (lowPerformingTrains.length > 0) {
       alerts.push({
         type: 'warning',
         message: `${lowPerformingTrains.length} trains with low performance scores`,
-        trains: lowPerformingTrains.map(t => t.id),
+        trains: lowPerformingTrains.map(t => t.id || t.train_id),
         timestamp: this.lastUpdate
       });
     }
 
     // Info alerts for high-performing trains
-    const highPerformingTrains = this.getAvailableTrains().filter(train => train.score >= 95);
+    const highPerformingTrains = this.getAvailableTrains().filter(train => (train.score || train.composite_score * 100) >= 95);
     if (highPerformingTrains.length > 0) {
       alerts.push({
         type: 'info',
         message: `${highPerformingTrains.length} trains with excellent performance`,
-        trains: highPerformingTrains.map(t => t.id),
+        trains: highPerformingTrains.map(t => t.id || t.train_id),
         timestamp: this.lastUpdate
       });
     }
@@ -303,6 +380,42 @@ class MLDataService {
     return await this.loadMLData();
   }
 
+  // Force refresh: invalidate cache and reload from CSV
+  async forceRefresh() {
+    this.trainData = null;
+    this.dashboardData = null;
+    this.lastUpdate = null;
+    console.log('🔄 Force refresh: cache cleared, reloading...');
+    return await this.loadMLData();
+  }
+
+  // Get the recommended immediate-deployment train
+  // (highest score among available SERVICE trains, weighted by low shunt cost)
+  getImmediateDeployment() {
+    const available = this.getAvailableTrains();
+    if (!available.length) return null;
+
+    // Sort by composite score descending
+    const sorted = [...available].sort((a, b) => {
+      // 60% readiness score, 40% inverse shunting score (lower shunt = better)
+      const scoreA = 0.6 * (a.composite_score || a.score / 100)
+        + 0.4 * (a.individual_scores?.stabling || 0.5);
+      const scoreB = 0.6 * (b.composite_score || b.score / 100)
+        + 0.4 * (b.individual_scores?.stabling || 0.5);
+      return scoreB - scoreA;
+    });
+
+    const best = sorted[0];
+    return {
+      trainId: best.id || best.train_id,
+      score: best.score,
+      compositeScore: best.composite_score,
+      assignment: best.assignment || 'Service',
+      stablingBay: best.stabling_bay,
+      reason: `Highest immediate deployment score — readiness ${best.score}%, low shunt cost`,
+    };
+  }
+
   // Get service status
   getServiceStatus() {
     return {
@@ -312,62 +425,6 @@ class MLDataService {
       availableTrains: this.getAvailableTrains().length,
       maintenanceTrains: this.getMaintenanceTrains().length
     };
-  }
-
-  // Get fallback data when CSV/API is not available
-  getFallbackData() {
-    console.log('🔄 Generating fallback train data...');
-    const fallbackTrains = [];
-    
-    for (let i = 1; i <= 25; i++) {
-      const trainId = `R-${String(i).padStart(3, '0')}`;
-      const score = 0.85 + Math.random() * 0.15; // Random score between 0.85-1.0
-      
-      fallbackTrains.push({
-        id: trainId,
-        rank: i,
-        status: Math.random() > 0.2 ? 'Available' : 'Unavailable',
-        location: `A${Math.floor(Math.random() * 20) + 1}`,
-        lastMaintenance: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        mileage: Math.floor(Math.random() * 50000) + 50000,
-        performance: score,
-        score: score,
-        branding_priority: Math.floor(Math.random() * 10) + 1,
-        assignment: 'Service',
-        fitnessValid: Math.random() > 0.1,
-        jobCardStatus: Math.random() > 0.15 ? 'Clear' : 'Open',
-        explanation: 'Generated fallback data for demonstration',
-        stabling_bay: `A${Math.floor(Math.random() * 20) + 1}`,
-        last_cleaned_date: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        mileageScore: score * 0.95,
-        brandingScore: score * 0.98,
-        cleaningScore: score * 0.97,
-        shuntingScore: score * 0.92,
-        finalScoreGA: score,
-        totalShuntingCost: Math.random() * 10 + 2,
-        countPenalty: 0,
-        shuntPenalty: 0,
-        brandingShortfall: Math.random() > 0.8,
-        efficiency: score * 100,
-        reliability: score * 100,
-        utilization: score * 100,
-        nextMaintenance: new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-        violations: {
-          fitness: Math.random() > 0.9 ? 1 : 0,
-          jobCards: Math.random() > 0.85 ? 1 : 0,
-          cleaning: Math.random() > 0.95 ? 1 : 0,
-          branding: Math.random() > 0.8 ? 1 : 0
-        },
-        cost: {
-          operational: Math.floor(Math.random() * 1000) + 500,
-          maintenance: Math.floor(Math.random() * 200) + 100,
-          energy: Math.floor(Math.random() * 300) + 150
-        }
-      });
-    }
-    
-    console.log('✅ Generated', fallbackTrains.length, 'fallback train records');
-    return fallbackTrains;
   }
 }
 

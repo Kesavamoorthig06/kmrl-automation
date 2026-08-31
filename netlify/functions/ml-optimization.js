@@ -261,6 +261,31 @@ class SimpleMLProcessor {
         } else if (compositeScore < 0.7) {
             overallStatus = 'Unavailable';
         }
+
+        // Check stabling geometry deployment readiness
+        const stablingData = this.data['stabling_geometry'];
+        const trainStab = stablingData ? stablingData.find(t => t.train_id === trainId) : null;
+        let deploymentReady = true;
+        let bayType = 'standard';
+        let opEff = 95;
+        if (trainStab) {
+            bayType = trainStab.bay_type || 'standard';
+            opEff = parseInt(trainStab.operational_efficiency || 95);
+            const deployTime = parseInt(trainStab.deployment_time_minutes || 8);
+            const complexity = (trainStab.shunting_complexity || 'low').toLowerCase();
+            const waterOk = (trainStab.water_supply_available || 'yes').toLowerCase() === 'yes';
+            const powerOk = (trainStab.power_supply_available || 'yes').toLowerCase() === 'yes';
+            deploymentReady = (
+                opEff >= 80 &&
+                deployTime <= 12 &&
+                ['low', 'medium'].includes(complexity) &&
+                waterOk &&
+                powerOk
+            );
+        }
+        if (!deploymentReady && overallStatus === 'Available') {
+            overallStatus = 'Unavailable';
+        }
         
         return {
             train_id: trainId,
@@ -268,15 +293,19 @@ class SimpleMLProcessor {
             overall_status: overallStatus,
             individual_scores: scores,
             individual_statuses: statuses,
-            explanation: this.generateExplanation(scores, statuses, overallStatus)
+            deployment_ready: deploymentReady,
+            bay_type: bayType,
+            operational_efficiency: opEff,
+            explanation: this.generateExplanation(scores, statuses, overallStatus, deploymentReady, bayType, opEff)
         };
     }
 
-    generateExplanation(scores, statuses, overallStatus) {
+    generateExplanation(scores, statuses, overallStatus, deploymentReady = true, bayType = 'standard', opEff = 95) {
         const explanations = [];
         
         if (scores.fitness < 0.7) explanations.push('Fitness certificates require attention');
         if (scores.job_card < 0.7) explanations.push('Open job cards need completion');
+        if (!deploymentReady) explanations.push(`Bay (${bayType}) not deployment-ready (efficiency ${opEff}%)`);
         if (scores.branding < 0.5) explanations.push('Low branding priority');
         if (scores.mileage < 0.7) explanations.push('Mileage efficiency below optimal');
         if (scores.cleaning < 0.8) explanations.push('Cleaning status needs improvement');

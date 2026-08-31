@@ -9,7 +9,13 @@ export const ml = {
   
   // Navigation
   dashboard: "ഡാഷ്ബോർഡ്",
+  schedule: "ഷെഡ്യൂൾ",
   alerts: "അലേർട്ടുകൾ",
+  scheduleTrainInduction: "ട്രെയിൻ ഇൻഡക്ഷൻ ഷെഡ്യൂൾ ചെയ്യുക",
+  selectAndDeployTrains: "സേവനത്തിനായി ട്രെയിനുകൾ തിരഞ്ഞെടുത്ത് വിന്യസിക്കുക",
+  currentlyDeployedTrains: "നിലവിൽ വിന്യസിച്ച ട്രെയിനുകൾ",
+  trainsInService: "സേവനത്തിലുള്ള ട്രെയിനുകൾ",
+  manageSchedule: "ഷെഡ്യൂൾ നിയന്ത്രിക്കുക",
   settings: "ക്രമീകരണങ്ങൾ",
   userSettings: "ഉപയോക്തൃ ക്രമീകരണങ്ങൾ",
   systemConfiguration: "സിസ്റ്റം കോൺഫിഗറേഷൻ",
@@ -48,7 +54,7 @@ export const ml = {
   selectedTrainsCount: "തിരഞ്ഞെടുത്ത ട്രെയിനുകൾ",
   availableCount: "ലഭ്യമാണ്",
   clearAll: "എല്ലാം മായ്ക്കുക",
-  confirmAnalytics: "ട്രെയിൻ വിന്യാസം സ്ഥിരീകരിക്കുക",
+  confirmAnalytics: "ഷെഡ്യൂൾ സൃഷ്ടിക്കുക",
   
   // Buttons
   rerunSimulation: "സിമുലേഷൻ വീണ്ടും പ്രവർത്തിപ്പിക്കുക",

@@ -1,0 +1,16 @@
+[
+  {
+    "date": "2026-02-20T00:48:20.510673",
+    "weights": {
+      "ml_score": 0.2931,
+      "mileage_balance": 0.1957,
+      "branding_urgency": 0.1541,
+      "shunt_cost": 0.1468,
+      "cleaning_need": 0.1125,
+      "fault_risk": 0.0978
+    },
+    "mean_reward": 0.8744,
+    "advantage": -0.0079,
+    "n_samples": 25
+  }
+]

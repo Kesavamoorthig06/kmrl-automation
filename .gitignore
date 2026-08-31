@@ -101,11 +101,18 @@ __pycache__/
 *$py.class
 *.so
 .Python
+.venv/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Deploy / build artifacts
+deploy-*/
+
+# Removed: test QR set (use qr-codes/ for working set)
+QR_Test_Codes/
 
 # Database files
 *.db

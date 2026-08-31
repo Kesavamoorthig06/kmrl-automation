@@ -1,0 +1,268 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-02-19",
+  "description": "Global parameter registry for KMRL railway certification document processing. Used as RAG retrieval context and deterministic validation rules.",
+  "parameters": [
+    {
+      "param_id": "RS-001",
+      "name": "Wheel Diameter",
+      "domain": "rolling_stock",
+      "unit": "mm",
+      "pass_condition": "value >= 840 and value <= 860",
+      "criticality": "critical",
+      "description": "Worn wheel tread diameter measured at flange reference point"
+    },
+    {
+      "param_id": "RS-002",
+      "name": "Brake Pad Thickness",
+      "domain": "rolling_stock",
+      "unit": "mm",
+      "pass_condition": "value >= 15",
+      "criticality": "critical",
+      "description": "Minimum remaining friction material thickness on composite brake pads"
+    },
+    {
+      "param_id": "RS-003",
+      "name": "Bogie Frame Crack Length",
+      "domain": "rolling_stock",
+      "unit": "mm",
+      "pass_condition": "value <= 0.5",
+      "criticality": "critical",
+      "description": "Maximum allowable fatigue crack length on bogie frame weldments via MPI/UT"
+    },
+    {
+      "param_id": "RS-004",
+      "name": "Axle Bearing Temperature",
+      "domain": "rolling_stock",
+      "unit": "degC",
+      "pass_condition": "value <= 70",
+      "criticality": "high",
+      "description": "Peak operating temperature of axle box bearing under load"
+    },
+    {
+      "param_id": "RS-005",
+      "name": "Traction Motor Insulation Resistance",
+      "domain": "rolling_stock",
+      "unit": "MOhm",
+      "pass_condition": "value >= 2",
+      "criticality": "high",
+      "description": "Insulation resistance of traction motor windings measured at 500V DC"
+    },
+    {
+      "param_id": "RS-006",
+      "name": "Pantograph Contact Force",
+      "domain": "rolling_stock",
+      "unit": "N",
+      "pass_condition": "value >= 70 and value <= 120",
+      "criticality": "medium",
+      "description": "Static uplift force of pantograph carbon strip on OHE contact wire"
+    },
+    {
+      "param_id": "RS-007",
+      "name": "Coupler Height",
+      "domain": "rolling_stock",
+      "unit": "mm",
+      "pass_condition": "value >= 1040 and value <= 1060",
+      "criticality": "medium",
+      "description": "Centre height of automatic coupler from rail level"
+    },
+    {
+      "param_id": "RS-008",
+      "name": "Suspension Spring Deflection",
+      "domain": "rolling_stock",
+      "unit": "mm",
+      "pass_condition": "value <= 25",
+      "criticality": "medium",
+      "description": "Secondary suspension vertical deflection under tare weight"
+    },
+    {
+      "param_id": "RS-009",
+      "name": "Door Opening Force",
+      "domain": "rolling_stock",
+      "unit": "N",
+      "pass_condition": "value <= 100",
+      "criticality": "low",
+      "description": "Maximum force required to manually open passenger sliding door"
+    },
+    {
+      "param_id": "RS-010",
+      "name": "HVAC Cooling Capacity",
+      "domain": "rolling_stock",
+      "unit": "kW",
+      "pass_condition": "value >= 35",
+      "criticality": "low",
+      "description": "Rated cooling output per saloon HVAC package unit"
+    },
+    {
+      "param_id": "RS-011",
+      "name": "Wheel Flange Thickness",
+      "domain": "rolling_stock",
+      "unit": "mm",
+      "pass_condition": "value >= 22 and value <= 33",
+      "criticality": "critical",
+      "description": "Flange thickness measured 10mm below flange tip"
+    },
+    {
+      "param_id": "RS-012",
+      "name": "Air Spring Pressure",
+      "domain": "rolling_stock",
+      "unit": "bar",
+      "pass_condition": "value >= 3.5 and value <= 6.0",
+      "criticality": "high",
+      "description": "Secondary air spring operating pressure under tare load"
+    },
+    {
+      "param_id": "SIG-001",
+      "name": "ATP Response Time",
+      "domain": "signalling",
+      "unit": "ms",
+      "pass_condition": "value <= 500",
+      "criticality": "critical",
+      "description": "Time from ATP trigger to emergency brake command application"
+    },
+    {
+      "param_id": "SIG-002",
+      "name": "Balise Read Accuracy",
+      "domain": "signalling",
+      "unit": "pct",
+      "pass_condition": "value >= 99.5",
+      "criticality": "critical",
+      "description": "Percentage of successful balise telegram reads over test distance"
+    },
+    {
+      "param_id": "SIG-003",
+      "name": "Odometer Drift",
+      "domain": "signalling",
+      "unit": "pct",
+      "pass_condition": "value <= 0.5",
+      "criticality": "high",
+      "description": "Cumulative position error as percentage over 10km calibration run"
+    },
+    {
+      "param_id": "SIG-004",
+      "name": "Cab Signal Display Brightness",
+      "domain": "signalling",
+      "unit": "cd_per_m2",
+      "pass_condition": "value >= 200",
+      "criticality": "medium",
+      "description": "Luminance of DMI display under direct sunlight test condition"
+    },
+    {
+      "param_id": "SIG-005",
+      "name": "Train-to-Wayside Communication Latency",
+      "domain": "signalling",
+      "unit": "ms",
+      "pass_condition": "value <= 100",
+      "criticality": "high",
+      "description": "Round-trip latency of CBTC radio communication link"
+    },
+    {
+      "param_id": "SIG-006",
+      "name": "Axle Counter Reset Accuracy",
+      "domain": "signalling",
+      "unit": "pct",
+      "pass_condition": "value >= 99.9",
+      "criticality": "critical",
+      "description": "Track vacancy detection accuracy after conditional reset"
+    },
+    {
+      "param_id": "SIG-007",
+      "name": "Speed Sensor Accuracy",
+      "domain": "signalling",
+      "unit": "pct",
+      "pass_condition": "value >= 99.0",
+      "criticality": "high",
+      "description": "Speed measurement accuracy across full operational range"
+    },
+    {
+      "param_id": "SAF-001",
+      "name": "Fire Detection Response Time",
+      "domain": "safety",
+      "unit": "s",
+      "pass_condition": "value <= 30",
+      "criticality": "critical",
+      "description": "Time from fire ignition to alarm activation per EN 45545"
+    },
+    {
+      "param_id": "SAF-002",
+      "name": "Emergency Brake Distance",
+      "domain": "safety",
+      "unit": "m",
+      "pass_condition": "value <= 150",
+      "criticality": "critical",
+      "description": "Stopping distance from 80 km/h on level dry rail"
+    },
+    {
+      "param_id": "SAF-003",
+      "name": "Door Interlock Holding Force",
+      "domain": "safety",
+      "unit": "N",
+      "pass_condition": "value >= 500",
+      "criticality": "critical",
+      "description": "Force required to defeat powered door interlock mechanism"
+    },
+    {
+      "param_id": "SAF-004",
+      "name": "Emergency Lighting Duration",
+      "domain": "safety",
+      "unit": "min",
+      "pass_condition": "value >= 90",
+      "criticality": "high",
+      "description": "Battery-backed emergency lighting endurance after power loss"
+    },
+    {
+      "param_id": "SAF-005",
+      "name": "Smoke Obscuration",
+      "domain": "safety",
+      "unit": "pct",
+      "pass_condition": "value <= 10",
+      "criticality": "high",
+      "description": "Maximum smoke density obscuration per metre in evacuation corridor"
+    },
+    {
+      "param_id": "SAF-006",
+      "name": "Deadman Device Response Time",
+      "domain": "safety",
+      "unit": "s",
+      "pass_condition": "value <= 3",
+      "criticality": "critical",
+      "description": "Time from driver incapacitation to automatic emergency brake"
+    },
+    {
+      "param_id": "SAF-007",
+      "name": "Crashworthiness Longitudinal Force",
+      "domain": "safety",
+      "unit": "kN",
+      "pass_condition": "value >= 1500",
+      "criticality": "critical",
+      "description": "Peak longitudinal compressive force endured by end structure per EN 15227"
+    },
+    {
+      "param_id": "SAF-008",
+      "name": "Earthing Resistance",
+      "domain": "safety",
+      "unit": "Ohm",
+      "pass_condition": "value <= 1",
+      "criticality": "high",
+      "description": "Resistance between car body metalwork and running rail return circuit"
+    },
+    {
+      "param_id": "SAF-009",
+      "name": "Emergency Egress Door Width",
+      "domain": "safety",
+      "unit": "mm",
+      "pass_condition": "value >= 650",
+      "criticality": "high",
+      "description": "Clear opening width of emergency detrainment doors"
+    },
+    {
+      "param_id": "SAF-010",
+      "name": "PSD-Train Door Alignment Tolerance",
+      "domain": "safety",
+      "unit": "mm",
+      "pass_condition": "value <= 50",
+      "criticality": "medium",
+      "description": "Longitudinal misalignment between platform screen door and train door"
+    }
+  ]
+}

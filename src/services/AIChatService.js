@@ -67,9 +67,13 @@ export class AIChatService {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/test-ai-chat`);
+      const response = await fetch(`${API_BASE_URL}/ai-chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Hello' })
+      });
       const data = await response.json();
-      return data;
+      return response.ok ? { success: true, message: 'AI Chat API is working!' } : { success: false, message: data.error || 'Connection failed' };
     } catch (error) {
       console.error('Error testing AI chat connection:', error);
       throw error;

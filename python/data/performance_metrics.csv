@@ -1,8 +1,0 @@
-metric,value,description
-Total shunting cost (meters),1096.17,Total distance for all service trains to reach depot exits
-Count penalty,1.0,Penalty for not meeting exact service count requirement
-Shunt penalty,0.8462,Penalty for exceeding maximum shunting cost threshold
-Service trains assigned,14,Number of trains assigned to revenue service
-Standby trains assigned,0,Number of trains assigned to standby
-Maintenance trains,11,Number of trains requiring maintenance
-Branding shortfall,False,Whether branding exposure target was met

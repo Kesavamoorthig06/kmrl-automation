@@ -2,7 +2,7 @@ const QRCode = require('qrcode');
 
 /**
  * Netlify Function: Generate QR Codes
- * Replicates the functionality of scripts/generate_qr_codes.js
+ * Generates QR codes for login roles (admin, brand, clean, tech, yard, operation).
  */
 
 const qrCredentials = {

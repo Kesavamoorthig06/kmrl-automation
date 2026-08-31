@@ -1,0 +1,85 @@
+{
+  "success": true,
+  "final_score": 1.0,
+  "critical_fail": false,
+  "domain_scores": {
+    "signalling": 1.0
+  },
+  "parameters": [
+    {
+      "param_id": "SIG-001",
+      "name": "ATP Response Time",
+      "domain": "signalling",
+      "value": 320.0,
+      "unit": "ms",
+      "pass_condition": "value <= 500",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "SIG-002",
+      "name": "Balise Read Accuracy",
+      "domain": "signalling",
+      "value": 99.82,
+      "unit": "pct",
+      "pass_condition": "value >= 99.5",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "SIG-003",
+      "name": "Odometer Drift",
+      "domain": "signalling",
+      "value": 0.28,
+      "unit": "pct",
+      "pass_condition": "value <= 0.5",
+      "passed": true,
+      "criticality": "high"
+    },
+    {
+      "param_id": "SIG-004",
+      "name": "Cab Signal Display Brightness",
+      "domain": "signalling",
+      "value": 285.0,
+      "unit": "cd_per_m2",
+      "pass_condition": "value >= 200",
+      "passed": true,
+      "criticality": "medium"
+    },
+    {
+      "param_id": "SIG-005",
+      "name": "Train-to-Wayside Communication Latency",
+      "domain": "signalling",
+      "value": 62.0,
+      "unit": "ms",
+      "pass_condition": "value <= 100",
+      "passed": true,
+      "criticality": "high"
+    },
+    {
+      "param_id": "SIG-006",
+      "name": "Axle Counter Reset Accuracy",
+      "domain": "signalling",
+      "value": 99.97,
+      "unit": "pct",
+      "pass_condition": "value >= 99.9",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "SIG-007",
+      "name": "Speed Sensor Accuracy",
+      "domain": "signalling",
+      "value": 99.45,
+      "unit": "pct",
+      "pass_condition": "value >= 99.0",
+      "passed": true,
+      "criticality": "high"
+    }
+  ],
+  "extracted_count": 7,
+  "total_registry_count": 7,
+  "train_id": "T-001",
+  "domain": "signalling",
+  "text_length": 1516
+}

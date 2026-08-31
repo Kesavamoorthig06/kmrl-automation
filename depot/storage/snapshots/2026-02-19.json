@@ -1,0 +1,182 @@
+{
+  "snapshot_time": 1771521324.847069,
+  "snapshot_iso": "2026-02-19T22:45:24.847069",
+  "train_count": 25,
+  "trains": [
+    {
+      "train_id": "TS-001",
+      "track": "STABLING_09",
+      "berth": "S09-B",
+      "speed": 0.0,
+      "stopped_since": 1771517927.4753
+    },
+    {
+      "train_id": "TS-002",
+      "track": "STABLING_07",
+      "berth": "S07-B",
+      "speed": 0.0,
+      "stopped_since": 1771516277.078447
+    },
+    {
+      "train_id": "TS-003",
+      "track": "STABLING_04",
+      "berth": "S04-A",
+      "speed": 0.0,
+      "stopped_since": 1771516827.04545
+    },
+    {
+      "train_id": "TS-004",
+      "track": "STABLING_05",
+      "berth": "S05-B",
+      "speed": 0.0,
+      "stopped_since": 1771516643.639603
+    },
+    {
+      "train_id": "TS-005",
+      "track": "STABLING_11",
+      "berth": "S11-B",
+      "speed": 0.0,
+      "stopped_since": 1771517010.621786
+    },
+    {
+      "train_id": "TS-006",
+      "track": "STABLING_06",
+      "berth": "S06-B",
+      "speed": 0.0,
+      "stopped_since": 1771517744.179344
+    },
+    {
+      "train_id": "TS-007",
+      "track": "STABLING_10",
+      "berth": "S10-A",
+      "speed": 0.0,
+      "stopped_since": 1771517378.416901
+    },
+    {
+      "train_id": "TS-008",
+      "track": "STABLING_01",
+      "berth": "S01-A",
+      "speed": 0.0,
+      "stopped_since": 1771519801.892738
+    },
+    {
+      "train_id": "TS-009",
+      "track": "STABLING_08",
+      "berth": "S08-A",
+      "speed": 0.0,
+      "stopped_since": 1771518109.458189
+    },
+    {
+      "train_id": "TS-010",
+      "track": "STABLING_01",
+      "berth": "S01-B",
+      "speed": 0.0,
+      "stopped_since": 1771515909.620848
+    },
+    {
+      "train_id": "TS-011",
+      "track": "STABLING_01",
+      "berth": "S01-B",
+      "speed": 0.0,
+      "stopped_since": 1771520409.878426
+    },
+    {
+      "train_id": "TS-012",
+      "track": "STABLING_12",
+      "berth": "S12-B",
+      "speed": 0.0,
+      "stopped_since": 1771517562.226324
+    },
+    {
+      "train_id": "TS-013",
+      "track": "STABLING_02",
+      "berth": "S02-A",
+      "speed": 0.0,
+      "stopped_since": 1771516460.057716
+    },
+    {
+      "train_id": "TS-014",
+      "track": "STABLING_09",
+      "berth": "S09-A",
+      "speed": 0.0,
+      "stopped_since": 1771515725.201197
+    },
+    {
+      "train_id": "TS-015",
+      "track": "STABLING_02",
+      "berth": "S02-A",
+      "speed": 0.0,
+      "stopped_since": 1771518654.912014
+    },
+    {
+      "train_id": "TS-016",
+      "track": "STABLING_03",
+      "berth": "S03-A",
+      "speed": 0.0,
+      "stopped_since": 1771517194.52774
+    },
+    {
+      "train_id": "TS-017",
+      "track": "STABLING_06",
+      "berth": "S06-A",
+      "speed": 0.0,
+      "stopped_since": 1771516095.264044
+    },
+    {
+      "train_id": "TS-018",
+      "track": "STABLING_02",
+      "berth": "S02-A",
+      "speed": 0.0,
+      "stopped_since": 1771519200.503941
+    },
+    {
+      "train_id": "TS-019",
+      "track": "STABLING_10",
+      "berth": "S10-B",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    },
+    {
+      "train_id": "TS-020",
+      "track": "STABLING_04",
+      "berth": "S04-B",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    },
+    {
+      "train_id": "TS-021",
+      "track": "STABLING_05",
+      "berth": "S05-A",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    },
+    {
+      "train_id": "TS-022",
+      "track": "STABLING_01",
+      "berth": "S01-A",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    },
+    {
+      "train_id": "TS-023",
+      "track": "STABLING_02",
+      "berth": "S02-B",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    },
+    {
+      "train_id": "TS-024",
+      "track": "STABLING_11",
+      "berth": "S11-A",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    },
+    {
+      "train_id": "TS-025",
+      "track": "IBL_01",
+      "berth": "IBL01-A",
+      "speed": 0.0,
+      "stopped_since": 1771439400.177727
+    }
+  ]
+}

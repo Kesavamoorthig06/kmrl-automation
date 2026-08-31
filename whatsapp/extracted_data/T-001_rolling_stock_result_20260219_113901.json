@@ -1,0 +1,135 @@
+{
+  "success": true,
+  "final_score": 1.0,
+  "critical_fail": false,
+  "domain_scores": {
+    "rolling_stock": 1.0
+  },
+  "parameters": [
+    {
+      "param_id": "RS-001",
+      "name": "Wheel Diameter",
+      "domain": "rolling_stock",
+      "value": 850.2,
+      "unit": "mm",
+      "pass_condition": "value >= 840 and value <= 860",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "RS-002",
+      "name": "Brake Pad Thickness",
+      "domain": "rolling_stock",
+      "value": 18.5,
+      "unit": "mm",
+      "pass_condition": "value >= 15",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "RS-003",
+      "name": "Bogie Frame Crack Length",
+      "domain": "rolling_stock",
+      "value": 0.1,
+      "unit": "mm",
+      "pass_condition": "value <= 0.5",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "RS-004",
+      "name": "Axle Bearing Temperature",
+      "domain": "rolling_stock",
+      "value": 58.3,
+      "unit": "degC",
+      "pass_condition": "value <= 70",
+      "passed": true,
+      "criticality": "high"
+    },
+    {
+      "param_id": "RS-005",
+      "name": "Traction Motor Insulation Resistance",
+      "domain": "rolling_stock",
+      "value": 4.2,
+      "unit": "MOhm",
+      "pass_condition": "value >= 2",
+      "passed": true,
+      "criticality": "high"
+    },
+    {
+      "param_id": "RS-006",
+      "name": "Pantograph Contact Force",
+      "domain": "rolling_stock",
+      "value": 92.5,
+      "unit": "N",
+      "pass_condition": "value >= 70 and value <= 120",
+      "passed": true,
+      "criticality": "medium"
+    },
+    {
+      "param_id": "RS-007",
+      "name": "Coupler Height",
+      "domain": "rolling_stock",
+      "value": 1050.0,
+      "unit": "mm",
+      "pass_condition": "value >= 1040 and value <= 1060",
+      "passed": true,
+      "criticality": "medium"
+    },
+    {
+      "param_id": "RS-008",
+      "name": "Suspension Spring Deflection",
+      "domain": "rolling_stock",
+      "value": 18.7,
+      "unit": "mm",
+      "pass_condition": "value <= 25",
+      "passed": true,
+      "criticality": "medium"
+    },
+    {
+      "param_id": "RS-009",
+      "name": "Door Opening Force",
+      "domain": "rolling_stock",
+      "value": 72.0,
+      "unit": "N",
+      "pass_condition": "value <= 100",
+      "passed": true,
+      "criticality": "low"
+    },
+    {
+      "param_id": "RS-010",
+      "name": "HVAC Cooling Capacity",
+      "domain": "rolling_stock",
+      "value": 38.5,
+      "unit": "kW",
+      "pass_condition": "value >= 35",
+      "passed": true,
+      "criticality": "low"
+    },
+    {
+      "param_id": "RS-011",
+      "name": "Wheel Flange Thickness",
+      "domain": "rolling_stock",
+      "value": 27.8,
+      "unit": "mm",
+      "pass_condition": "value >= 22 and value <= 33",
+      "passed": true,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "RS-012",
+      "name": "Air Spring Pressure",
+      "domain": "rolling_stock",
+      "value": 4.8,
+      "unit": "bar",
+      "pass_condition": "value >= 3.5 and value <= 6.0",
+      "passed": true,
+      "criticality": "high"
+    }
+  ],
+  "extracted_count": 12,
+  "total_registry_count": 12,
+  "train_id": "T-001",
+  "domain": "rolling_stock",
+  "text_length": 1194
+}

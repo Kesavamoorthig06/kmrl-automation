@@ -1,0 +1,30 @@
+{
+  "depot_name": "Muttom Depot",
+  "tracks": {
+    "MAINLINE_UP": {"type": "mainline", "direction": "UP"},
+    "MAINLINE_DN": {"type": "mainline", "direction": "DN"},
+    "DEPOT_ENTRY": {"type": "approach", "connects": ["MAINLINE_UP", "DEPOT_YARD"]},
+    "DEPOT_YARD":  {"type": "yard", "connects": ["DEPOT_ENTRY", "STABLING_*", "IBL_*"]},
+    "STABLING_01": {"type": "stabling", "berths": ["S01-A", "S01-B"]},
+    "STABLING_02": {"type": "stabling", "berths": ["S02-A", "S02-B"]},
+    "STABLING_03": {"type": "stabling", "berths": ["S03-A", "S03-B"]},
+    "STABLING_04": {"type": "stabling", "berths": ["S04-A", "S04-B"]},
+    "STABLING_05": {"type": "stabling", "berths": ["S05-A", "S05-B"]},
+    "STABLING_06": {"type": "stabling", "berths": ["S06-A", "S06-B"]},
+    "STABLING_07": {"type": "stabling", "berths": ["S07-A", "S07-B"]},
+    "STABLING_08": {"type": "stabling", "berths": ["S08-A", "S08-B"]},
+    "STABLING_09": {"type": "stabling", "berths": ["S09-A", "S09-B"]},
+    "STABLING_10": {"type": "stabling", "berths": ["S10-A", "S10-B"]},
+    "STABLING_11": {"type": "stabling", "berths": ["S11-A", "S11-B"]},
+    "STABLING_12": {"type": "stabling", "berths": ["S12-A", "S12-B"]},
+    "IBL_01":      {"type": "ibl", "berths": ["IBL01-A"]},
+    "IBL_02":      {"type": "ibl", "berths": ["IBL02-A"]},
+    "IBL_03":      {"type": "ibl", "berths": ["IBL03-A"]},
+    "WASH_LINE":   {"type": "wash", "berths": ["WL-A"]},
+    "CLEAN_BAY_01":{"type": "cleaning", "berths": ["CB01-A"]},
+    "CLEAN_BAY_02":{"type": "cleaning", "berths": ["CB02-A"]}
+  },
+  "depot_track_prefixes": ["DEPOT_", "STABLING_", "IBL_", "WASH_", "CLEAN_"],
+  "mainline_track_prefixes": ["MAINLINE_"],
+  "total_berth_capacity": 30
+}

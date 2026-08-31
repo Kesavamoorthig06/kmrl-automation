@@ -13,22 +13,21 @@ import React from "react";
 
 export default function YardMaster() {
   return (
-    <div>
+    <div className="yard-master-page">
       <style>{`
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
+    .yard-master-page {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #f3f3f3;
       min-height: 100vh;
       padding: 20px;
+      box-sizing: border-box;
     }
 
-    .container {
+    .yard-master-page * {
+      box-sizing: border-box;
+    }
+
+    .yard-master-page .container {
       max-width: 1200px;
       margin: 0 auto;
       background: #fff;
@@ -37,7 +36,7 @@ export default function YardMaster() {
       overflow: hidden;
     }
 
-    .header {
+    .yard-master-page .header {
       background: #ffffff;
       border-bottom: 2px solid #e0e0e0;
       color: #000;
@@ -45,35 +44,35 @@ export default function YardMaster() {
       text-align: center;
     }
 
-    .header h1 {
+    .yard-master-page .header h1 {
       font-size: 2.4em;
       margin-bottom: 10px;
       font-weight: 600;
       color: #222;
     }
 
-    .header p {
+    .yard-master-page .header p {
       font-size: 1.2em;
       color: #444;
       font-weight: 400;
     }
 
-    .main-content {
+    .yard-master-page .main-content {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 30px;
       padding: 40px;
     }
 
-    .form-section,
-    .map-section {
+    .yard-master-page .form-section,
+    .yard-master-page .map-section {
       background: #fff;
       padding: 25px;
       border-radius: 10px;
       border: 1px solid #e0e0e0;
     }
 
-    .section-title {
+    .yard-master-page .section-title {
       background: #fff;
       color: #000;
       font-size: 1.4em;
@@ -83,11 +82,11 @@ export default function YardMaster() {
       padding-bottom: 8px;
     }
 
-    .form-group {
+    .yard-master-page .form-group {
       margin-bottom: 20px;
     }
 
-    label {
+    .yard-master-page label {
       display: block;
       margin-bottom: 6px;
       font-weight: 500;
@@ -95,10 +94,10 @@ export default function YardMaster() {
       font-size: 1em;
     }
 
-    input,
-    select,
-    textarea,
-    button {
+    .yard-master-page input,
+    .yard-master-page select,
+    .yard-master-page textarea,
+    .yard-master-page button {
       width: 100%;
       padding: 10px 14px;
       border: 1px solid #ccc;
@@ -107,22 +106,22 @@ export default function YardMaster() {
       transition: all 0.3s ease;
     }
 
-    input:focus,
-    select:focus,
-    textarea:focus {
+    .yard-master-page input:focus,
+    .yard-master-page select:focus,
+    .yard-master-page textarea:focus {
       outline: none;
       border-color: #007bff;
       box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
     }
 
-    .auto-field {
+    .yard-master-page .auto-field {
       background: #fafafa;
       color: #444;
       position: relative;
       font-weight: 500;
     }
 
-    .auto-field::after {
+    .yard-master-page .auto-field::after {
       content: "AUTO";
       position: absolute;
       right: 10px;
@@ -136,17 +135,17 @@ export default function YardMaster() {
       font-weight: 500;
     }
 
-    .qr-scanner {
+    .yard-master-page .qr-scanner {
       display: flex;
       gap: 12px;
       align-items: center;
     }
 
-    .qr-scanner input {
+    .yard-master-page .qr-scanner input {
       flex: 1;
     }
 
-    .dropdown-toggle {
+    .yard-master-page .dropdown-toggle {
       width: auto;
       background: #007bff;
       color: white;
@@ -159,22 +158,22 @@ export default function YardMaster() {
       white-space: nowrap;
     }
 
-    .dropdown-toggle:hover {
+    .yard-master-page .dropdown-toggle:hover {
       background: #0056b3;
     }
 
-    .bay-selector {
+    .yard-master-page .bay-selector {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
 
-    .selector-tabs {
+    .yard-master-page .selector-tabs {
       display: flex;
       gap: 10px;
     }
 
-    .tab-btn {
+    .yard-master-page .tab-btn {
       flex: 1;
       padding: 10px;
       background: #f7f7f7;
@@ -185,13 +184,13 @@ export default function YardMaster() {
       transition: all 0.3s ease;
     }
 
-    .tab-btn.active {
+    .yard-master-page .tab-btn.active {
       background: #007bff;
       border-color: #0056b3;
       color: #fff;
     }
 
-    .bay-grid {
+    .yard-master-page .bay-grid {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       gap: 8px;
@@ -202,7 +201,7 @@ export default function YardMaster() {
       min-height: 280px;
     }
 
-    .bay-slot {
+    .yard-master-page .bay-slot {
       aspect-ratio: 1;
       border: 1px solid #ccc;
       border-radius: 6px;
@@ -215,54 +214,54 @@ export default function YardMaster() {
       font-size: 0.9em;
     }
 
-    .bay-slot.available {
+    .yard-master-page .bay-slot.available {
       background: #d4edda;
       border-color: #28a745;
       color: #155724;
     }
 
-    .bay-slot.occupied {
+    .yard-master-page .bay-slot.occupied {
       background: #f8d7da;
       border-color: #dc3545;
       color: #721c24;
       cursor: not-allowed;
     }
 
-    .bay-slot.maintenance {
+    .yard-master-page .bay-slot.maintenance {
       background: #e2d9f3;
       border-color: #6f42c1;
       color: #3d2461;
       cursor: not-allowed;
     }
 
-    .bay-slot.selected {
+    .yard-master-page .bay-slot.selected {
       background: #007bff !important;
       border-color: #0056b3 !important;
       color: #fff !important;
       transform: scale(1.05);
     }
 
-    .legend {
+    .yard-master-page .legend {
       display: flex;
       justify-content: space-around;
       margin-top: 12px;
       font-size: 0.85em;
     }
 
-    .legend-item {
+    .yard-master-page .legend-item {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .legend-color {
+    .yard-master-page .legend-color {
       width: 18px;
       height: 18px;
       border-radius: 3px;
       border: 1px solid #333;
     }
 
-    .confirmation {
+    .yard-master-page .confirmation {
       display: flex;
       align-items: center;
       gap: 15px;
@@ -273,13 +272,13 @@ export default function YardMaster() {
       margin-top: 15px;
     }
 
-    .confirm-checkbox {
+    .yard-master-page .confirm-checkbox {
       width: 20px;
       height: 20px;
       accent-color: #007bff;
     }
 
-    .submit-btn {
+    .yard-master-page .submit-btn {
       background: #007bff;
       color: white;
       border: none;
@@ -293,16 +292,16 @@ export default function YardMaster() {
       width: 100%;
     }
 
-    .submit-btn:hover:not(:disabled) {
+    .yard-master-page .submit-btn:hover:not(:disabled) {
       background: #0056b3;
     }
 
-    .submit-btn:disabled {
+    .yard-master-page .submit-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
-    .selected-bay-info {
+    .yard-master-page .selected-bay-info {
       background: #fdfdfe;
       border: 1px solid #ccc;
       padding: 12px;
@@ -313,12 +312,12 @@ export default function YardMaster() {
     }
 
     @media (max-width: 768px) {
-      .main-content {
+      .yard-master-page .main-content {
         grid-template-columns: 1fr;
         gap: 20px;
         padding: 20px;
       }
-      .bay-grid {
+      .yard-master-page .bay-grid {
         grid-template-columns: repeat(4, 1fr);
       }
     }

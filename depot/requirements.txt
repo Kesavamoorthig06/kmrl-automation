@@ -1,0 +1,6 @@
+fastapi>=0.110
+uvicorn>=0.27
+pydantic>=2.5
+aiofiles>=23.2
+orjson>=3.9
+websockets>=12.0

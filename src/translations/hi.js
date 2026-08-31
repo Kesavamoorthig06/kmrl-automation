@@ -9,7 +9,13 @@ export const hi = {
   
   // Navigation
   dashboard: "डैशबोर्ड",
+  schedule: "शेड्यूल",
   alerts: "अलर्ट्स",
+  scheduleTrainInduction: "ट्रेन इंडक्शन शेड्यूल करें",
+  selectAndDeployTrains: "सेवा के लिए ट्रेनों का चयन और तैनाती करें",
+  currentlyDeployedTrains: "वर्तमान में तैनात ट्रेनें",
+  trainsInService: "सेवा में ट्रेनें",
+  manageSchedule: "शेड्यूल प्रबंधित करें",
   settings: "सेटिंग्स",
   userSettings: "यूजर सेटिंग्स",
   systemConfiguration: "सिस्टम कॉन्फिगरेशन",
@@ -48,7 +54,7 @@ export const hi = {
   selectedTrainsCount: "चयनित ट्रेनें",
   availableCount: "उपलब्ध",
   clearAll: "सभी साफ करें",
-  confirmAnalytics: "ट्रेन तैनाती की पुष्टि करें",
+  confirmAnalytics: "शेड्यूल बनाएं",
   
   // Buttons
   rerunSimulation: "सिमुलेशन फिर से चलाएं",

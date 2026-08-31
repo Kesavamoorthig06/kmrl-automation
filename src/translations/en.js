@@ -9,7 +9,10 @@ export const en = {
   
   // Navigation
   dashboard: "Dashboard",
+  schedule: "Schedule",
   alerts: "Alerts",
+  scheduleTrainInduction: "Schedule Train Induction",
+  selectAndDeployTrains: "Select and deploy trains for service",
   settings: "Settings",
   userSettings: "User Settings",
   systemConfiguration: "System Configuration",
@@ -48,7 +51,7 @@ export const en = {
   selectedTrainsCount: "SELECTED TRAINS",
   availableCount: "AVAILABLE",
   clearAll: "CLEAR ALL",
-  confirmAnalytics: "CONFIRM TRAIN DEPLOYMENT",
+  confirmAnalytics: "CREATE SCHEDULE",
   
   // Buttons
   rerunSimulation: "RE-RUN SIMULATION",
@@ -126,6 +129,11 @@ export const en = {
   deploymentComplete: "Deployment Complete",
   allTrainsSuccessfullyDeployed: "All {count} trains successfully deployed",
   viewDashboard: "View Dashboard",
+  
+  // Dashboard — Deployed trains
+  currentlyDeployedTrains: "Currently Deployed Trains",
+  trainsInService: "trains in service",
+  manageSchedule: "MANAGE SCHEDULE",
   
   // Button Labels
   modifySelection: "MODIFY SELECTION",

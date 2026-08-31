@@ -1,0 +1,78 @@
+{
+  "train_id": "T-001",
+  "domain": "signalling",
+  "extracted_at": "2026-02-19T11:37:55.878119",
+  "parameter_count": 7,
+  "parameters": [
+    {
+      "param_id": "SIG-001",
+      "name": "ATP Response Time",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "ms",
+      "pass_condition": "value <= 500",
+      "passed": null,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "SIG-002",
+      "name": "Balise Read Accuracy",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "pct",
+      "pass_condition": "value >= 99.5",
+      "passed": null,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "SIG-003",
+      "name": "Odometer Drift",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "pct",
+      "pass_condition": "value <= 0.5",
+      "passed": null,
+      "criticality": "high"
+    },
+    {
+      "param_id": "SIG-004",
+      "name": "Cab Signal Display Brightness",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "cd_per_m2",
+      "pass_condition": "value >= 200",
+      "passed": null,
+      "criticality": "medium"
+    },
+    {
+      "param_id": "SIG-005",
+      "name": "Train-to-Wayside Communication Latency",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "ms",
+      "pass_condition": "value <= 100",
+      "passed": null,
+      "criticality": "high"
+    },
+    {
+      "param_id": "SIG-006",
+      "name": "Axle Counter Reset Accuracy",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "pct",
+      "pass_condition": "value >= 99.9",
+      "passed": null,
+      "criticality": "critical"
+    },
+    {
+      "param_id": "SIG-007",
+      "name": "Speed Sensor Accuracy",
+      "domain": "signalling",
+      "measured_value": null,
+      "unit": "pct",
+      "pass_condition": "value >= 99.0",
+      "passed": null,
+      "criticality": "high"
+    }
+  ]
+}

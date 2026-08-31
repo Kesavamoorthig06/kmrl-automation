@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { RefreshCw, XCircle, CheckCircle, Users, BarChart3, Target, Activity, Zap, MessageCircle } from "lucide-react";
+import { RefreshCw, XCircle, CheckCircle, BarChart3, Activity } from "lucide-react";
 import SelectedTrainsDashboard from "./SelectedTrainsDashboard.jsx";
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/layout/Navbar.jsx";
 import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
 import PerformanceMetrics from "../components/dashboard/PerformanceMetrics.jsx";
 import MaintenanceAlert from "../components/dashboard/MaintenanceAlert.jsx";
@@ -12,23 +12,30 @@ import ConstraintsModal from "../components/dashboard/ConstraintsModal.jsx";
 import ReasonModal from "../components/dashboard/ReasonModal.jsx";
 import TrainDetailsModal from "../components/dashboard/TrainDetailsModal.jsx";
 import DeploymentStatusCards from "../components/dashboard/DeploymentStatusCards.jsx";
-import SystemStatusAnalyticsBanner from "../components/SystemStatusAnalyticsBanner.jsx";
-import AIChatbot from "../components/AIChatbot.jsx";
+import SystemStatusAnalyticsBanner from "../components/status/SystemStatusAnalyticsBanner.jsx";
+import AIChatbot from "../components/chat/AIChatbot.jsx";
+import SchedulaneLoadingPage from "../components/loading/SchedulaneLoadingPage.jsx";
 // Removed debug component to maintain minimal theme
 // Removed unused CSV parsing imports - now using MLDataService
 import MLDataService from "../services/MLDataService.js";
 import { useTranslation } from "../hooks/useTranslation.js";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { LiveOperationsProvider } from "../contexts/LiveOperationsContext.jsx";
+import { SystemHaltBanner, LiveDeployedTable } from "../components/dashboard/LiveStatusComponents.jsx";
+import SwapModal from "../components/dashboard/SwapModal.jsx";
 
 function Dashboard() {
+  // Outer wrapper — loads data, then provides LiveOperationsProvider
   const { t } = useTranslation();
-  const { language, switchLanguage } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { language, switchLanguage } = useLanguage();
   
   const [trains, setTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [reasonText, setReasonText] = useState("");
   const [showTrainModal, setShowTrainModal] = useState(false);
@@ -40,7 +47,11 @@ function Dashboard() {
   const [performanceMetrics, setPerformanceMetrics] = useState(null);
   const [selectedTrains, setSelectedTrains] = useState(new Set());
   const [trainMetrics, setTrainMetrics] = useState(null);
-  const [currentPage, setCurrentPage] = useState('selection'); // 'selection', 'dashboard', or 'deployment-success'
+  const [currentPage, setCurrentPage] = useState(() => {
+    // If navigated from Schedule page with deployment success flag, show deployment success
+    if (location.state?.showDeploymentSuccess) return 'deployment-success';
+    return 'selection';
+  }); // 'selection', 'dashboard', or 'deployment-success'
   const [showConstraintsModal, setShowConstraintsModal] = useState(false);
   const [selectedTrainForConstraints, setSelectedTrainForConstraints] = useState(null);
   const [constraintChecks, setConstraintChecks] = useState({
@@ -52,12 +63,16 @@ function Dashboard() {
     stablingGeometry: false
   });
   const [isBannerCollapsed, setIsBannerCollapsed] = useState(false);
+  const [showSwapModal, setShowSwapModal] = useState(false);
   const [serverStatus, setServerStatus] = useState('unknown'); // 'connected', 'disconnected', 'unknown'
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
   const [realTimeData, setRealTimeData] = useState(null);
   const [optimizationResults, setOptimizationResults] = useState(null);
   const [isRealTimeActive, setIsRealTimeActive] = useState(false);
   const [alerts, setAlerts] = useState([]);
+  const [showSchedulaneLoading, setShowSchedulaneLoading] = useState(() => {
+    return !sessionStorage.getItem('schedulane_loaded');
+  });
 
   // Check server status - Mock for production
   const checkServerStatus = async () => {
@@ -74,6 +89,8 @@ function Dashboard() {
     } else if (page === 'alerts') {
       // Navigate to alerts page using React Router
       navigate('/alerts');
+    } else if (page === 'schedule') {
+      navigate('/schedule');
     } else if (page === 'settings') {
       // Handle settings page - you can implement this later
       console.log('Settings page requested');
@@ -134,6 +151,8 @@ function Dashboard() {
     setLastUpdateTime(new Date());
   }, [trains, performanceMetrics]);
 
+
+
   // Handle refresh functionality
   const handleRefresh = () => {
     setLastUpdateTime(new Date());
@@ -185,16 +204,54 @@ function Dashboard() {
         throw new Error('No ML data available');
       }
       
-      setTrains(mlData);
-      
-      // Auto-select top 14 available trains
-      const availableTrains = mlData
-        .filter(train => train.status === "Available")
+      // Add ranking information to trains
+      const rankedTrains = mlData
         .sort((a, b) => b.score - a.score) // Sort by score descending
-        .slice(0, 14); // Take top 14
+        .map((train, index) => ({
+          ...train,
+          rank: index + 1 // Add rank starting from 1
+        }));
       
-      const autoSelectedIds = new Set(availableTrains.map(train => train.id));
-      setSelectedTrains(autoSelectedIds);
+      setTrains(rankedTrains);
+      
+      // Check for active schedule: first try API (shared with WhatsApp bot), then localStorage
+      let scheduledIds = null;
+      try {
+        const schedResp = await fetch('/schedule/active');
+        if (schedResp.ok) {
+          const schedData = await schedResp.json();
+          if (schedData.schedule && schedData.schedule.status === 'ACTIVE' && schedData.schedule.train_ids) {
+            scheduledIds = schedData.schedule.train_ids;
+            // Sync to localStorage so other components stay consistent
+            localStorage.setItem('scheduled_train_ids', JSON.stringify(scheduledIds));
+            localStorage.setItem('schedule_timestamp', schedData.schedule.created_at || new Date().toISOString());
+          }
+        }
+      } catch {
+        // API not available — fall through to localStorage
+      }
+
+      if (!scheduledIds) {
+        const savedSchedule = localStorage.getItem('scheduled_train_ids');
+        if (savedSchedule) {
+          try {
+            scheduledIds = JSON.parse(savedSchedule);
+          } catch {
+            scheduledIds = null;
+          }
+        }
+      }
+
+      if (scheduledIds && scheduledIds.length > 0) {
+        const validIds = scheduledIds.filter(id => rankedTrains.some(t => t.id === id));
+        setSelectedTrains(new Set(validIds));
+      } else {
+        // Auto-select top 14 available AND deployment-ready service trains
+        const availableTrains = rankedTrains
+          .filter(train => train.status === "Available" && train.assignment === "Service")
+          .slice(0, 14);
+        setSelectedTrains(new Set(availableTrains.map(train => train.id)));
+      }
       
       // Get performance metrics from MLDataService
       const summary = MLDataService.getDashboardSummary();
@@ -209,12 +266,14 @@ function Dashboard() {
       });
       
       setError(null);
+      setLoading(false);
       console.log('✅ Dashboard: Successfully loaded ML data');
     } catch (err) {
       console.error('❌ Error loading ML data:', err);
       setError('Failed to load ML analysis data. Please ensure the CSV file is available.');
-    } finally {
       setLoading(false);
+    } finally {
+      setDataLoaded(true);
     }
   };
 
@@ -619,7 +678,8 @@ function Dashboard() {
 
   const handleSelectAllAvailable = () => {
     const availableTrainIds = trains
-      .filter(train => train.status === "Available")
+      .filter(train => train.status === "Available" && train.assignment === "Service")
+      .slice(0, 14)
       .map(train => train.id);
     setSelectedTrains(new Set(availableTrainIds));
   };
@@ -764,15 +824,19 @@ function Dashboard() {
     .filter(t => t.status === "Unavailable")
     .map(t => ({ id: t.id, reason: t.explain }));
 
-  if (loading) {
+  // Handle loading completion
+  const handleSchedulaneLoadingComplete = () => {
+    sessionStorage.setItem('schedulane_loaded', 'true');
+    setShowSchedulaneLoading(false);
+  };
+
+  // Show SCHEDULANE loading page first
+  if (showSchedulaneLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">{t('loading')} ML Analysis Data...</p>
-          <p className="text-sm text-gray-500 mt-2">Please wait while we load the train data...</p>
-        </div>
-      </div>
+      <SchedulaneLoadingPage 
+        onLoadingComplete={handleSchedulaneLoadingComplete}
+        loadingDuration={6000}
+      />
     );
   }
 
@@ -910,7 +974,11 @@ function Dashboard() {
           {/* Action Buttons - Only View Dashboard button */}
           <div className="flex justify-center">
             <button
-              onClick={() => setCurrentPage('selection')}
+              onClick={() => {
+                setCurrentPage('selection');
+                // Clear location state so back/forward doesn't re-show deployment success
+                window.history.replaceState({}, '');
+              }}
               className="px-8 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-2 border-black dark:border-gray-600 rounded-none hover:bg-black dark:hover:bg-gray-700 hover:text-white transition-colors font-medium shadow-lg hover:shadow-xl"
             >
 {t('viewDashboard')}
@@ -922,10 +990,9 @@ function Dashboard() {
   }
 
 
-  // Clean minimal dashboard render
-  
 
   return (
+    <LiveOperationsProvider allTrains={trains} scheduledTrainIds={selectedTrains}>
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Navbar */}
       <Navbar 
@@ -999,30 +1066,29 @@ function Dashboard() {
           />
         </div>
 
-        {/* Train Table */}
-        <div className="mb-8 bg-white/70 backdrop-blur-sm border border-slate-200 rounded-xl shadow-sm p-6">
-        <TrainTable 
+        {/* System Halt Banner — shows when all trains shunted */}
+        <SystemHaltBanner />
+
+        {/* Currently Deployed Trains — LIVE status view */}
+        <LiveDeployedTable
           trains={trains}
           selectedTrains={selectedTrains}
           onTrainClick={handleTrainClick}
-          onUnavailableClick={handleUnavailableClick}
-          onAvailableClick={handleAvailableClick}
-          onTrainSelection={handleTrainSelection}
-            t={t}
-        />
-        </div>
-
-        {/* Selection Controls */}
-        <div className="mb-8">
-        <SelectionControls 
-          selectedTrains={selectedTrains}
-          trains={trains}
-          onSelectAllAvailable={handleSelectAllAvailable}
-          onClearAll={handleClearAll}
-          onConfirmSelection={() => setCurrentPage('dashboard')}
           t={t}
         />
+
+        {/* Quick Actions */}
+        <div className="mb-8 flex justify-center">
+          <button
+            onClick={() => setShowSwapModal(true)}
+            className="px-8 py-3 bg-white dark:bg-gray-800 text-black dark:text-white border-2 border-black dark:border-gray-600 rounded-none hover:bg-black dark:hover:bg-gray-700 hover:text-white transition-colors font-medium shadow-sm hover:shadow-lg"
+          >
+            MANAGE TRAINS
+          </button>
         </div>
+
+        {/* Swap Modal */}
+        <SwapModal open={showSwapModal} onClose={() => setShowSwapModal(false)} trains={trains} />
 
         {/* Confirmation Alert */}
         <ConfirmationAlert showConfirmation={showConfirmation} />
@@ -1057,6 +1123,7 @@ function Dashboard() {
         <AIChatbot />
       </div>
     </div>
+    </LiveOperationsProvider>
   );
 }
 

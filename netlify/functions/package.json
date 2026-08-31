@@ -4,7 +4,7 @@
   "description": "Netlify Functions for KMRL Metro System",
   "main": "index.js",
   "dependencies": {
-    "qrcode": "^1.5.3"
+    "qrcode": "^1.5.4"
   },
   "engines": {
     "node": ">=18.0.0"
