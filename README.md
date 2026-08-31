@@ -87,6 +87,3 @@ Some modules may depend on local environment variables, generated data files, or
 
 This project is currently intended for internal operational use and is not yet published under an explicit public license.
 
-## Repository Naming
-
-The project has been renamed and branded as Schedulane for public-facing use.
