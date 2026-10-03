@@ -19,6 +19,8 @@ WORKDIR /app
 COPY whatsapp/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY whatsapp/ ./whatsapp/
+# cert_client reads this registry file at import time (config only, no models)
+COPY cert_rag/config/ ./cert_rag/config/
 # main.py serves ../public relative to the whatsapp/ folder
 COPY --from=web /web/build ./public
 WORKDIR /app/whatsapp
