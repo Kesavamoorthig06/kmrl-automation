@@ -1,0 +1,57 @@
+name: schedulane-azure-build
+# Builds Dockerfile.azure and pushes ghcr.io/<owner>/schedulane:<tag>.
+# A one-time bootstrap step first commits the deploy fixes (see commit message).
+on:
+  push:
+    branches: [deploy-schedulane]
+  workflow_dispatch:
+permissions:
+  contents: write
+  packages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Commit deploy fixes (one-time bootstrap)
+        run: |
+          if [ -f Dockerfile.azure ]; then echo "already applied"; exit 0; fi
+          # 1. Linux case-sensitivity: file names must match their imports
+          git mv src/pages/adminpage.jsx src/pages/AdminPage.jsx
+          cd src/components/workers
+          git mv cleaning.jsx Cleaning.jsx; git mv yard.jsx Yard.jsx; git mv login.jsx Login.jsx
+          cd ../../..
+          # 2. Restore public/ assets (images, csv data, charts) from repo history
+          D=deploy-68d2c9b20b250a70ce364b22
+          mkdir -p public
+          git archive 2bc4797 $D | tar -x -C /tmp
+          cp -r /tmp/$D/. public/
+          rm -rf public/assets public/netlify.toml public/index.html public/annotates
+          # 3. Regenerate the out-of-sync lockfile
+          npm install --package-lock-only --no-audit --no-fund
+          # 4. Text changes: .gitignore, requirements, schedule_store CSV schema, Dockerfile.azure
+          echo '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' | base64 -d | gunzip > /tmp/sl.patch
+          git apply /tmp/sl.patch
+          git add -A
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Schedulane Azure deploy: fix file-name case, restore public/ assets from 2bc4797, sync lockfile, CSV schema + python-multipart fixes, Dockerfile.azure"
+          git push origin HEAD:deploy-schedulane
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr A-Z a-z)
+          TAG=sl-$(git rev-parse --short HEAD)
+          docker build -f Dockerfile.azure -t ghcr.io/$OWNER/schedulane:$TAG -t ghcr.io/$OWNER/schedulane:latest .
+          docker push ghcr.io/$OWNER/schedulane:$TAG
+          docker push ghcr.io/$OWNER/schedulane:latest
+          echo "pushed tag $TAG"
