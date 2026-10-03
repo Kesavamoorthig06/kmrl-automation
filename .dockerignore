@@ -1,0 +1,6 @@
+node_modules
+build
+.git
+whatsapp/storage
+whatsapp/audit_logs
+whatsapp/*.db

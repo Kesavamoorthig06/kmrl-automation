@@ -1,0 +1,27 @@
+# ---------------------------------------------------------------------------
+# Schedulane - Azure Container Apps image (single container)
+#   Stage 1: build the React/Vite frontend  -> /web/build
+#   Stage 2: FastAPI backend (whatsapp/) that serves the API and the built SPA
+# Optional integrations (Twilio, Cognito, S3, cert_rag, Gemini) are NOT baked
+# in; they stay disabled unless env vars are supplied at runtime.
+# ---------------------------------------------------------------------------
+FROM node:20-alpine AS web
+WORKDIR /web
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY index.html vite.config.js postcss.config.js tailwind.config.js ./
+COPY src ./src
+COPY public ./public
+RUN npx vite build
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY whatsapp/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+COPY whatsapp/ ./whatsapp/
+# main.py serves ../public relative to the whatsapp/ folder
+COPY --from=web /web/build ./public
+WORKDIR /app/whatsapp
+ENV API_HOST=0.0.0.0 API_PORT=8300
+EXPOSE 8300
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8300", "--proxy-headers", "--forwarded-allow-ips", "*"]

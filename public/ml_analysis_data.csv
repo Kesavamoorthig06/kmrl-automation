@@ -1,0 +1,26 @@
+train_id,status,assignment,fitness_certificate_valid,job_card_status,branding_priority,mileage,last_cleaned_date,stabling_bay,mileage_score,branding_score,cleaning_score,shunting_score,prelim_score,final_score_ga,maintenance_reason,service_rank,total_shunting_cost,count_penalty,shunt_penalty,branding_shortfall,service_trains_count,maintenance_trains_count,standby_trains_count,generation_timestamp
+1,eligible,service,True,completed,8,125000,2024-01-15,A1,0.2879,0.8,0.375,0.9224,0.6299,0.6299,,9,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+2,eligible,service,True,completed,7,98000,2024-01-14,A2,0.697,0.6,0.3125,0.9426,0.6478,0.6478,,8,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+3,maintenance,maintenance,False,open,6,156000,2024-01-10,B1,,,,,,,Fitness certificate invalid,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+4,eligible,service,True,completed,9,87000,2024-01-16,A3,0.8636,1.0,0.4375,0.9626,0.9179,0.9179,,1,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+5,maintenance,maintenance,False,open,5,142000,2024-01-12,B2,,,,,,,Fitness certificate invalid,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+6,eligible,service,True,completed,8,108000,2024-01-17,A4,0.5455,0.8,0.5,0.9823,0.7228,0.7228,,6,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+7,eligible,service,True,completed,7,134000,2024-01-13,B3,0.1515,0.6,0.25,0.9426,0.4779,0.4779,,13,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+8,maintenance,maintenance,False,open,4,76000,2024-01-11,C1,,,,,,,Fitness certificate invalid,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+9,eligible,service,True,completed,6,118000,2024-01-18,A5,0.3939,0.4,0.5625,1.0,0.4735,0.4735,,14,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+10,eligible,service,True,completed,9,95000,2024-01-19,A6,0.7424,1.0,0.625,0.0,0.7893,0.7893,,3,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+11,maintenance,maintenance,False,open,5,148000,2024-01-09,B4,,,,,,,Fitness certificate invalid,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+12,eligible,service,True,completed,8,82000,2024-01-20,A7,0.9394,0.8,0.6875,1.0,0.8567,0.8567,,2,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+13,eligible,standby,True,completed,7,126000,2024-01-14,B5,0.2727,0.6,0.3125,0.0,0.417,0.417,,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+14,maintenance,maintenance,False,open,3,112000,2024-01-08,C2,,,,,,,Fitness certificate invalid,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+15,eligible,service,True,completed,6,89000,2024-01-21,A8,0.8333,0.4,0.75,0.0,0.5113,0.5113,,11,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+16,eligible,service,True,completed,8,138000,2024-01-12,B6,0.0909,0.8,0.1875,0.9626,0.5622,0.5622,,10,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+17,maintenance,maintenance,False,open,4,104000,2024-01-10,C3,,,,,,,Fitness certificate invalid,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+18,eligible,service,True,completed,7,78000,2024-01-22,A9,1.0,0.6,0.8125,0.0,0.6706,0.6706,,7,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+19,eligible,service,True,completed,9,122000,2024-01-15,B7,0.3333,1.0,0.375,0.9626,0.7527,0.7527,,4,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+20,eligible,service,True,completed,6,96000,2024-01-23,A10,0.7273,0.4,0.875,0.0,0.4872,0.4872,,12,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+21,eligible,standby,True,completed,5,144000,2024-01-11,B8,0.0,0.2,0.125,0.0,0.1127,0.1127,,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+22,eligible,service,True,completed,8,86000,2024-01-24,A11,0.8788,0.8,0.9375,0.0,0.7465,0.7465,,5,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+23,eligible,standby,True,completed,7,130000,2024-01-13,B9,0.2121,0.6,0.25,0.0,0.3945,0.3945,,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+24,eligible,service,True,completed,4,100000,2024-01-09,C4,0.6667,0.0,0.0,0.918,0.3018,0.3018,,15,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703
+25,eligible,standby,True,completed,6,116000,2024-01-25,A12,0.4242,0.4,1.0,0.0,0.4032,0.4032,,,5534.72,0.0,5.2847,False,15,6,4,2025-09-23T19:00:22.955703

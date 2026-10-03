@@ -51,6 +51,48 @@ def _find_csv() -> Optional[str]:
     return None
 
 
+# -- CSV schema normalisation (Azure deploy fix) -----------------------------
+# The CSV committed to the repo (ml_analysis_data.csv, Sept 2025 export) uses
+# status="eligible", assignment="service", True/False flags and a
+# final_score_ga column. The live ML pipeline writes status="Available",
+# assignment="Service", "Yes"/"No" flags and a score column. Accept both.
+
+def _truthy(v) -> bool:
+    return str(v).strip().lower() in ("yes", "true", "1")
+
+
+def _normalize_row(row: dict) -> dict:
+    status = (row.get("status") or "").strip()
+    if status.lower() in ("eligible", "available"):
+        status = "Available"
+    assignment = (row.get("assignment") or "").strip()
+    assignment = assignment[:1].upper() + assignment[1:].lower()
+    raw_score = row.get("score") or row.get("final_score_ga") or 0
+    try:
+        score = float(raw_score)
+    except ValueError:
+        score = 0.0
+    try:
+        branding = int(float(row.get("branding_priority") or 0))
+        mileage = int(float(row.get("mileage") or 0))
+    except ValueError:
+        branding, mileage = 0, 0
+    ready_raw = row.get("deployment_ready")
+    return {
+        "train_id": row.get("train_id", ""),
+        "status": status,
+        "score": score,
+        "stabling_bay": row.get("stabling_bay", ""),
+        "branding_priority": branding,
+        "mileage": mileage,
+        "last_cleaned_date": row.get("last_cleaned_date", ""),
+        "assignment": assignment,
+        "deployment_ready": True if ready_raw in (None, "") else _truthy(ready_raw),
+        "fitness_certificate_valid": _truthy(row.get("fitness_certificate_valid", "")),
+        "job_card_status": row.get("job_card_status", ""),
+    }
+
+
 def get_available_trains() -> list[dict]:
     """
     Read ml_analysis_data.csv and return available, service-ready trains
@@ -66,19 +108,7 @@ def get_available_trains() -> list[dict]:
         with open(csv_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                trains.append({
-                    "train_id": row.get("train_id", ""),
-                    "status": row.get("status", ""),
-                    "score": float(row.get("score", 0)),
-                    "stabling_bay": row.get("stabling_bay", ""),
-                    "branding_priority": int(row.get("branding_priority", 0)),
-                    "mileage": int(row.get("mileage", 0)),
-                    "last_cleaned_date": row.get("last_cleaned_date", ""),
-                    "assignment": row.get("assignment", ""),
-                    "deployment_ready": row.get("deployment_ready", "") == "Yes",
-                    "fitness_certificate_valid": row.get("fitness_certificate_valid", "") == "Yes",
-                    "job_card_status": row.get("job_card_status", ""),
-                })
+                trains.append(_normalize_row(row))
     except Exception as e:
         logger.error("Failed to read CSV: %s", e)
         return []
@@ -102,13 +132,8 @@ def get_all_trains_from_csv() -> list[dict]:
         with open(csv_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                trains.append({
-                    "train_id": row.get("train_id", ""),
-                    "status": row.get("status", ""),
-                    "score": float(row.get("score", 0)),
-                    "stabling_bay": row.get("stabling_bay", ""),
-                    "assignment": row.get("assignment", ""),
-                })
+                n = _normalize_row(row)
+                trains.append({k: n[k] for k in ("train_id", "status", "score", "stabling_bay", "assignment")})
     except Exception:
         return []
     return trains
