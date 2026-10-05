@@ -25,7 +25,7 @@ export default function BridgeLogin() {
   const apiBase =
     import.meta.env.VITE_BRIDGE_API_URL ||
     window.__BRIDGE_API_URL__ ||
-    `${window.location.protocol}//${window.location.hostname}:8300`;
+    window.location.origin;
 
   function showMessage(text, type) {
     setStatusMessage({ text, type });
