@@ -86,7 +86,7 @@ class MLDataService {
         id: row.train_id,
         train_id: row.train_id,
         status: ['available', 'eligible'].includes(String(row.status).toLowerCase()) ? 'Available' : 'Unavailable',
-        score: Math.round(parseFloat(row.final_score_ga || row.prelim_score || row.score || 0) * 100),
+        score: parseFloat(row.final_score_ga || row.prelim_score || row.score || 0),
         composite_score: parseFloat(row.final_score_ga || row.prelim_score || row.score || 0),
         stabling_bay: row.stabling_bay,
         branding_priority: parseInt(row.branding_priority || 0),
